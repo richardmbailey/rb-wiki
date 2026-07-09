@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.DS_Store
+inbox/processed/
+.wiki_cache/*.sqlite
+.wiki_cache/embeddings/*
+!.wiki_cache/embeddings/.gitkeep

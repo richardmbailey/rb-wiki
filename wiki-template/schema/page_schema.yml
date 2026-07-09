@@ -1,0 +1,39 @@
+profile: "llm-wiki-profile/0.1"
+required_fields:
+  - type
+  - title
+  - description
+  - resource
+  - tags
+  - timestamp
+  - created
+  - status
+  - profile
+  - sources
+  - confidence
+allowed_types:
+  - Concept
+  - Entity
+  - Summary
+  - Synthesis
+  - Decision
+  - Contradiction
+  - Reference
+  - Dataset
+  - Method
+  - Tool
+  - Project
+  - Overview
+allowed_statuses:
+  - active
+  - draft
+  - stale
+  - deprecated
+  - needs-review
+allowed_confidence:
+  - high
+  - medium
+  - low
+  - uncertain
+word_limit: 1000
+

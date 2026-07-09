@@ -1,0 +1,1435 @@
+{
+  "components": [
+    [
+      "/concepts/bm25-search.md",
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/frontmatter.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/concepts/vector-search.md",
+      "/concepts/wiki-drift.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/index.md",
+      "/log.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md",
+      "/tools/sqlite-fts5.md"
+    ]
+  ],
+  "degree": {
+    "/concepts/bm25-search.md": {
+      "in": 6,
+      "in_non_reserved": 5,
+      "out": 4
+    },
+    "/concepts/compiled-knowledge.md": {
+      "in": 8,
+      "in_non_reserved": 7,
+      "out": 7
+    },
+    "/concepts/context-contamination.md": {
+      "in": 4,
+      "in_non_reserved": 3,
+      "out": 6
+    },
+    "/concepts/frontmatter.md": {
+      "in": 3,
+      "in_non_reserved": 2,
+      "out": 4
+    },
+    "/concepts/hybrid-search.md": {
+      "in": 11,
+      "in_non_reserved": 10,
+      "out": 6
+    },
+    "/concepts/llm-wiki.md": {
+      "in": 11,
+      "in_non_reserved": 10,
+      "out": 7
+    },
+    "/concepts/open-knowledge-format.md": {
+      "in": 6,
+      "in_non_reserved": 5,
+      "out": 5
+    },
+    "/concepts/progressive-disclosure.md": {
+      "in": 11,
+      "in_non_reserved": 10,
+      "out": 6
+    },
+    "/concepts/reciprocal-rank-fusion.md": {
+      "in": 2,
+      "in_non_reserved": 1,
+      "out": 5
+    },
+    "/concepts/retrieval-augmented-generation.md": {
+      "in": 4,
+      "in_non_reserved": 3,
+      "out": 7
+    },
+    "/concepts/source-immutability.md": {
+      "in": 5,
+      "in_non_reserved": 4,
+      "out": 5
+    },
+    "/concepts/vector-search.md": {
+      "in": 5,
+      "in_non_reserved": 4,
+      "out": 3
+    },
+    "/concepts/wiki-drift.md": {
+      "in": 4,
+      "in_non_reserved": 3,
+      "out": 5
+    },
+    "/decisions/adopt-local-profile-over-minimal-okf.md": {
+      "in": 4,
+      "in_non_reserved": 3,
+      "out": 3
+    },
+    "/decisions/use-okf-compatible-markdown-links.md": {
+      "in": 4,
+      "in_non_reserved": 3,
+      "out": 3
+    },
+    "/index.md": {
+      "in": 0,
+      "in_non_reserved": 0,
+      "out": 24
+    },
+    "/log.md": {
+      "in": 0,
+      "in_non_reserved": 0,
+      "out": 1
+    },
+    "/methods/graph-routing.md": {
+      "in": 9,
+      "in_non_reserved": 8,
+      "out": 3
+    },
+    "/methods/source-ingestion.md": {
+      "in": 7,
+      "in_non_reserved": 6,
+      "out": 4
+    },
+    "/methods/wiki-linting.md": {
+      "in": 6,
+      "in_non_reserved": 5,
+      "out": 3
+    },
+    "/overview.md": {
+      "in": 2,
+      "in_non_reserved": 1,
+      "out": 9
+    },
+    "/references/2026-07-09-llm-wiki-system-instructions.md": {
+      "in": 25,
+      "in_non_reserved": 23,
+      "out": 15
+    },
+    "/syntheses/llm-wiki-operating-model.md": {
+      "in": 4,
+      "in_non_reserved": 3,
+      "out": 8
+    },
+    "/syntheses/llm-wiki-vs-rag.md": {
+      "in": 4,
+      "in_non_reserved": 3,
+      "out": 7
+    },
+    "/tools/query-cli.md": {
+      "in": 10,
+      "in_non_reserved": 9,
+      "out": 4
+    },
+    "/tools/sqlite-fts5.md": {
+      "in": 3,
+      "in_non_reserved": 2,
+      "out": 4
+    }
+  },
+  "edges": [
+    {
+      "source": "/concepts/bm25-search.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/concepts/bm25-search.md",
+      "target": "/concepts/vector-search.md"
+    },
+    {
+      "source": "/concepts/bm25-search.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/bm25-search.md",
+      "target": "/tools/sqlite-fts5.md"
+    },
+    {
+      "source": "/concepts/compiled-knowledge.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/concepts/compiled-knowledge.md",
+      "target": "/concepts/retrieval-augmented-generation.md"
+    },
+    {
+      "source": "/concepts/compiled-knowledge.md",
+      "target": "/concepts/wiki-drift.md"
+    },
+    {
+      "source": "/concepts/compiled-knowledge.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/concepts/compiled-knowledge.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/compiled-knowledge.md",
+      "target": "/syntheses/llm-wiki-operating-model.md"
+    },
+    {
+      "source": "/concepts/compiled-knowledge.md",
+      "target": "/syntheses/llm-wiki-vs-rag.md"
+    },
+    {
+      "source": "/concepts/context-contamination.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/concepts/context-contamination.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/concepts/context-contamination.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/concepts/context-contamination.md",
+      "target": "/concepts/wiki-drift.md"
+    },
+    {
+      "source": "/concepts/context-contamination.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/concepts/context-contamination.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/frontmatter.md",
+      "target": "/concepts/open-knowledge-format.md"
+    },
+    {
+      "source": "/concepts/frontmatter.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/concepts/frontmatter.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/frontmatter.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/concepts/hybrid-search.md",
+      "target": "/concepts/bm25-search.md"
+    },
+    {
+      "source": "/concepts/hybrid-search.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/concepts/hybrid-search.md",
+      "target": "/concepts/reciprocal-rank-fusion.md"
+    },
+    {
+      "source": "/concepts/hybrid-search.md",
+      "target": "/concepts/vector-search.md"
+    },
+    {
+      "source": "/concepts/hybrid-search.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/concepts/hybrid-search.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/llm-wiki.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/concepts/llm-wiki.md",
+      "target": "/concepts/open-knowledge-format.md"
+    },
+    {
+      "source": "/concepts/llm-wiki.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/concepts/llm-wiki.md",
+      "target": "/concepts/retrieval-augmented-generation.md"
+    },
+    {
+      "source": "/concepts/llm-wiki.md",
+      "target": "/concepts/source-immutability.md"
+    },
+    {
+      "source": "/concepts/llm-wiki.md",
+      "target": "/methods/wiki-linting.md"
+    },
+    {
+      "source": "/concepts/llm-wiki.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/open-knowledge-format.md",
+      "target": "/concepts/frontmatter.md"
+    },
+    {
+      "source": "/concepts/open-knowledge-format.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/concepts/open-knowledge-format.md",
+      "target": "/decisions/adopt-local-profile-over-minimal-okf.md"
+    },
+    {
+      "source": "/concepts/open-knowledge-format.md",
+      "target": "/decisions/use-okf-compatible-markdown-links.md"
+    },
+    {
+      "source": "/concepts/open-knowledge-format.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/progressive-disclosure.md",
+      "target": "/concepts/context-contamination.md"
+    },
+    {
+      "source": "/concepts/progressive-disclosure.md",
+      "target": "/concepts/frontmatter.md"
+    },
+    {
+      "source": "/concepts/progressive-disclosure.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/concepts/progressive-disclosure.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/concepts/progressive-disclosure.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/progressive-disclosure.md",
+      "target": "/syntheses/llm-wiki-operating-model.md"
+    },
+    {
+      "source": "/concepts/reciprocal-rank-fusion.md",
+      "target": "/concepts/bm25-search.md"
+    },
+    {
+      "source": "/concepts/reciprocal-rank-fusion.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/concepts/reciprocal-rank-fusion.md",
+      "target": "/concepts/vector-search.md"
+    },
+    {
+      "source": "/concepts/reciprocal-rank-fusion.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/reciprocal-rank-fusion.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/concepts/retrieval-augmented-generation.md",
+      "target": "/concepts/bm25-search.md"
+    },
+    {
+      "source": "/concepts/retrieval-augmented-generation.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/concepts/retrieval-augmented-generation.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/concepts/retrieval-augmented-generation.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/concepts/retrieval-augmented-generation.md",
+      "target": "/concepts/vector-search.md"
+    },
+    {
+      "source": "/concepts/retrieval-augmented-generation.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/retrieval-augmented-generation.md",
+      "target": "/syntheses/llm-wiki-vs-rag.md"
+    },
+    {
+      "source": "/concepts/source-immutability.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/concepts/source-immutability.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/concepts/source-immutability.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/concepts/source-immutability.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/source-immutability.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/concepts/vector-search.md",
+      "target": "/concepts/bm25-search.md"
+    },
+    {
+      "source": "/concepts/vector-search.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/concepts/vector-search.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/concepts/wiki-drift.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/concepts/wiki-drift.md",
+      "target": "/concepts/context-contamination.md"
+    },
+    {
+      "source": "/concepts/wiki-drift.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/concepts/wiki-drift.md",
+      "target": "/methods/wiki-linting.md"
+    },
+    {
+      "source": "/concepts/wiki-drift.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "target": "/concepts/open-knowledge-format.md"
+    },
+    {
+      "source": "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/decisions/use-okf-compatible-markdown-links.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/decisions/use-okf-compatible-markdown-links.md",
+      "target": "/concepts/open-knowledge-format.md"
+    },
+    {
+      "source": "/decisions/use-okf-compatible-markdown-links.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/bm25-search.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/context-contamination.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/frontmatter.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/open-knowledge-format.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/reciprocal-rank-fusion.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/retrieval-augmented-generation.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/source-immutability.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/vector-search.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/concepts/wiki-drift.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/decisions/adopt-local-profile-over-minimal-okf.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/decisions/use-okf-compatible-markdown-links.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/methods/wiki-linting.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/overview.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/syntheses/llm-wiki-operating-model.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/syntheses/llm-wiki-vs-rag.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/tools/sqlite-fts5.md"
+    },
+    {
+      "source": "/log.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/methods/graph-routing.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/methods/graph-routing.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/methods/graph-routing.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/methods/source-ingestion.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/methods/source-ingestion.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/methods/source-ingestion.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/methods/source-ingestion.md",
+      "target": "/tools/sqlite-fts5.md"
+    },
+    {
+      "source": "/methods/wiki-linting.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/methods/wiki-linting.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/methods/wiki-linting.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/concepts/source-immutability.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/decisions/adopt-local-profile-over-minimal-okf.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/decisions/use-okf-compatible-markdown-links.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/methods/wiki-linting.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/concepts/context-contamination.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/concepts/open-knowledge-format.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/concepts/source-immutability.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/concepts/wiki-drift.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/decisions/use-okf-compatible-markdown-links.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/methods/wiki-linting.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/overview.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/syntheses/llm-wiki-operating-model.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/syntheses/llm-wiki-vs-rag.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/concepts/source-immutability.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/decisions/adopt-local-profile-over-minimal-okf.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/methods/wiki-linting.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-operating-model.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-vs-rag.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-vs-rag.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-vs-rag.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-vs-rag.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-vs-rag.md",
+      "target": "/concepts/retrieval-augmented-generation.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-vs-rag.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/syntheses/llm-wiki-vs-rag.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/tools/query-cli.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/tools/query-cli.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/tools/query-cli.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/tools/query-cli.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/tools/sqlite-fts5.md",
+      "target": "/concepts/bm25-search.md"
+    },
+    {
+      "source": "/tools/sqlite-fts5.md",
+      "target": "/concepts/hybrid-search.md"
+    },
+    {
+      "source": "/tools/sqlite-fts5.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/tools/sqlite-fts5.md",
+      "target": "/tools/query-cli.md"
+    }
+  ],
+  "inbound": {
+    "/concepts/bm25-search.md": [
+      "/concepts/hybrid-search.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/vector-search.md",
+      "/index.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/concepts/compiled-knowledge.md": [
+      "/concepts/llm-wiki.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/concepts/wiki-drift.md",
+      "/index.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/context-contamination.md": [
+      "/concepts/progressive-disclosure.md",
+      "/concepts/wiki-drift.md",
+      "/index.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/frontmatter.md": [
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/index.md"
+    ],
+    "/concepts/hybrid-search.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/context-contamination.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/vector-search.md",
+      "/index.md",
+      "/methods/graph-routing.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/concepts/llm-wiki.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/index.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/open-knowledge-format.md": [
+      "/concepts/frontmatter.md",
+      "/concepts/llm-wiki.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/index.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/progressive-disclosure.md": [
+      "/concepts/context-contamination.md",
+      "/concepts/frontmatter.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/index.md",
+      "/methods/source-ingestion.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md"
+    ],
+    "/concepts/reciprocal-rank-fusion.md": [
+      "/concepts/hybrid-search.md",
+      "/index.md"
+    ],
+    "/concepts/retrieval-augmented-generation.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/llm-wiki.md",
+      "/index.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/source-immutability.md": [
+      "/concepts/llm-wiki.md",
+      "/index.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md"
+    ],
+    "/concepts/vector-search.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/index.md"
+    ],
+    "/concepts/wiki-drift.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/index.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/decisions/adopt-local-profile-over-minimal-okf.md": [
+      "/concepts/open-knowledge-format.md",
+      "/index.md",
+      "/overview.md",
+      "/syntheses/llm-wiki-operating-model.md"
+    ],
+    "/decisions/use-okf-compatible-markdown-links.md": [
+      "/concepts/open-knowledge-format.md",
+      "/index.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/index.md": [],
+    "/log.md": [],
+    "/methods/graph-routing.md": [
+      "/concepts/context-contamination.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/progressive-disclosure.md",
+      "/index.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/tools/query-cli.md"
+    ],
+    "/methods/source-ingestion.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/source-immutability.md",
+      "/concepts/wiki-drift.md",
+      "/index.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/methods/wiki-linting.md": [
+      "/concepts/llm-wiki.md",
+      "/concepts/wiki-drift.md",
+      "/index.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md"
+    ],
+    "/overview.md": [
+      "/index.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/references/2026-07-09-llm-wiki-system-instructions.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/frontmatter.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/concepts/vector-search.md",
+      "/concepts/wiki-drift.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/index.md",
+      "/log.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/syntheses/llm-wiki-operating-model.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/progressive-disclosure.md",
+      "/index.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/syntheses/llm-wiki-vs-rag.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/index.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/tools/query-cli.md": [
+      "/concepts/frontmatter.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/source-immutability.md",
+      "/index.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/tools/sqlite-fts5.md": [
+      "/concepts/bm25-search.md",
+      "/index.md",
+      "/methods/source-ingestion.md"
+    ]
+  },
+  "inbound_non_reserved": {
+    "/concepts/bm25-search.md": [
+      "/concepts/hybrid-search.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/vector-search.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/concepts/compiled-knowledge.md": [
+      "/concepts/llm-wiki.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/concepts/wiki-drift.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/context-contamination.md": [
+      "/concepts/progressive-disclosure.md",
+      "/concepts/wiki-drift.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/frontmatter.md": [
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md"
+    ],
+    "/concepts/hybrid-search.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/context-contamination.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/vector-search.md",
+      "/methods/graph-routing.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/concepts/llm-wiki.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/open-knowledge-format.md": [
+      "/concepts/frontmatter.md",
+      "/concepts/llm-wiki.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/progressive-disclosure.md": [
+      "/concepts/context-contamination.md",
+      "/concepts/frontmatter.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/methods/source-ingestion.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md"
+    ],
+    "/concepts/reciprocal-rank-fusion.md": [
+      "/concepts/hybrid-search.md"
+    ],
+    "/concepts/retrieval-augmented-generation.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/llm-wiki.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/source-immutability.md": [
+      "/concepts/llm-wiki.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md"
+    ],
+    "/concepts/vector-search.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md"
+    ],
+    "/concepts/wiki-drift.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/decisions/adopt-local-profile-over-minimal-okf.md": [
+      "/concepts/open-knowledge-format.md",
+      "/overview.md",
+      "/syntheses/llm-wiki-operating-model.md"
+    ],
+    "/decisions/use-okf-compatible-markdown-links.md": [
+      "/concepts/open-knowledge-format.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/index.md": [],
+    "/log.md": [],
+    "/methods/graph-routing.md": [
+      "/concepts/context-contamination.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/progressive-disclosure.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/tools/query-cli.md"
+    ],
+    "/methods/source-ingestion.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/source-immutability.md",
+      "/concepts/wiki-drift.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/methods/wiki-linting.md": [
+      "/concepts/llm-wiki.md",
+      "/concepts/wiki-drift.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md"
+    ],
+    "/overview.md": [
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/references/2026-07-09-llm-wiki-system-instructions.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/frontmatter.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/concepts/vector-search.md",
+      "/concepts/wiki-drift.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/syntheses/llm-wiki-operating-model.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/progressive-disclosure.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/syntheses/llm-wiki-vs-rag.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/tools/query-cli.md": [
+      "/concepts/frontmatter.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/source-immutability.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/tools/sqlite-fts5.md": [
+      "/concepts/bm25-search.md",
+      "/methods/source-ingestion.md"
+    ]
+  },
+  "nodes": [
+    "/concepts/bm25-search.md",
+    "/concepts/compiled-knowledge.md",
+    "/concepts/context-contamination.md",
+    "/concepts/frontmatter.md",
+    "/concepts/hybrid-search.md",
+    "/concepts/llm-wiki.md",
+    "/concepts/open-knowledge-format.md",
+    "/concepts/progressive-disclosure.md",
+    "/concepts/reciprocal-rank-fusion.md",
+    "/concepts/retrieval-augmented-generation.md",
+    "/concepts/source-immutability.md",
+    "/concepts/vector-search.md",
+    "/concepts/wiki-drift.md",
+    "/decisions/adopt-local-profile-over-minimal-okf.md",
+    "/decisions/use-okf-compatible-markdown-links.md",
+    "/index.md",
+    "/log.md",
+    "/methods/graph-routing.md",
+    "/methods/source-ingestion.md",
+    "/methods/wiki-linting.md",
+    "/overview.md",
+    "/references/2026-07-09-llm-wiki-system-instructions.md",
+    "/syntheses/llm-wiki-operating-model.md",
+    "/syntheses/llm-wiki-vs-rag.md",
+    "/tools/query-cli.md",
+    "/tools/sqlite-fts5.md"
+  ],
+  "orphans": [],
+  "orphans_excluding_reserved": [],
+  "outbound": {
+    "/concepts/bm25-search.md": [
+      "/concepts/hybrid-search.md",
+      "/concepts/vector-search.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/concepts/compiled-knowledge.md": [
+      "/concepts/llm-wiki.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/wiki-drift.md",
+      "/methods/source-ingestion.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/context-contamination.md": [
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/wiki-drift.md",
+      "/methods/graph-routing.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/frontmatter.md": [
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md"
+    ],
+    "/concepts/hybrid-search.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/vector-search.md",
+      "/methods/graph-routing.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/llm-wiki.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/methods/wiki-linting.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/open-knowledge-format.md": [
+      "/concepts/frontmatter.md",
+      "/concepts/llm-wiki.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/progressive-disclosure.md": [
+      "/concepts/context-contamination.md",
+      "/concepts/frontmatter.md",
+      "/concepts/hybrid-search.md",
+      "/methods/graph-routing.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md"
+    ],
+    "/concepts/reciprocal-rank-fusion.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/vector-search.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md"
+    ],
+    "/concepts/retrieval-augmented-generation.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/compiled-knowledge.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/vector-search.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-vs-rag.md"
+    ],
+    "/concepts/source-immutability.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/llm-wiki.md",
+      "/methods/source-ingestion.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md"
+    ],
+    "/concepts/vector-search.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/hybrid-search.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/concepts/wiki-drift.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/decisions/adopt-local-profile-over-minimal-okf.md": [
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/decisions/use-okf-compatible-markdown-links.md": [
+      "/concepts/llm-wiki.md",
+      "/concepts/open-knowledge-format.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/index.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/frontmatter.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/reciprocal-rank-fusion.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/concepts/source-immutability.md",
+      "/concepts/vector-search.md",
+      "/concepts/wiki-drift.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/log.md": [
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/methods/graph-routing.md": [
+      "/concepts/hybrid-search.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md"
+    ],
+    "/methods/source-ingestion.md": [
+      "/concepts/progressive-disclosure.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md",
+      "/tools/sqlite-fts5.md"
+    ],
+    "/methods/wiki-linting.md": [
+      "/methods/graph-routing.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md"
+    ],
+    "/overview.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/source-immutability.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/methods/graph-routing.md",
+      "/methods/wiki-linting.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/references/2026-07-09-llm-wiki-system-instructions.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/open-knowledge-format.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/source-immutability.md",
+      "/concepts/wiki-drift.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md"
+    ],
+    "/syntheses/llm-wiki-operating-model.md": [
+      "/concepts/llm-wiki.md",
+      "/concepts/source-immutability.md",
+      "/decisions/adopt-local-profile-over-minimal-okf.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md"
+    ],
+    "/syntheses/llm-wiki-vs-rag.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/hybrid-search.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/retrieval-augmented-generation.md",
+      "/methods/source-ingestion.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/tools/query-cli.md": [
+      "/concepts/hybrid-search.md",
+      "/concepts/progressive-disclosure.md",
+      "/methods/graph-routing.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md"
+    ],
+    "/tools/sqlite-fts5.md": [
+      "/concepts/bm25-search.md",
+      "/concepts/hybrid-search.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/tools/query-cli.md"
+    ]
+  }
+}

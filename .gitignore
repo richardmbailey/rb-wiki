@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.sqlite
+*.sqlite3
+.wiki_cache/*.sqlite
+.wiki_cache/*.sqlite3
+wiki-template/inbox/processed/
+wiki-template/.wiki_cache/*.sqlite
+wiki-template/.wiki_cache/*.sqlite3
+wiki-template/.wiki_cache/embeddings/*
+!wiki-template/.wiki_cache/embeddings/.gitkeep
