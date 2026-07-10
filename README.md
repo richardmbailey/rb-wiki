@@ -1,10 +1,10 @@
 # RB Wiki
 
-RB Wiki is a starter kit for building local LLM-wikis, which are git-backed Markdown knowledge bases where raw evidence is preserved, source-backed synthesis is curated, and deterministic tools keep the wiki healthy. It uses Google's Open Knowledge Framework standard for compatibility (https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing).
+RB Wiki is a starter kit for building local LLM-based wikis. Raw documents provide the information going in to each wiki, which is then processed through a combination of LLM actions and deterministic processes. This implementation uses Google's Open Knowledge Framework standard for compatibility (https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing).
 
-The wikis generate here are specifically designed as durable knowledge systems rather than a one-off "chat with my files" workflow. Raw sources go into the `inbox` and are stored in an immutable evidence layer. The wiki creates citations and cross-linked syntheses. Scripts handle validation, routing, graph building, ingest, and maintenance.
+The wikis generated here are specifically designed as durable knowledge systems, rather than a one-off "chat with documents" workflow. Raw sources go into the `inbox` and are stored in an immutable evidence layer. The wiki uses LLMs to creates summaries, citations and cross-linked syntheses. Scripts handle validation, routing, graph building, ingest, and maintenance.
 
-It is easiest to run this by opening the root folder within Codex or ClaudeCode, to handle the chat interface and make use of the skills.
+An easy way to run this is by opening the root folder within Codex or ClaudeCode, to handle the chat interface and make use of the skills.
 
 ## What Is Included
 
