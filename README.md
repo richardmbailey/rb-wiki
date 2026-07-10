@@ -73,7 +73,7 @@ The `rb-new-wiki` skill will gather the subject, display title, base directory n
 
 ## Adding Sources
 
-Drop Markdown or text files into a wiki's `inbox/`, then either ask Codex:
+Drop Markdown, text, or PDF files into a wiki's `inbox/`, then either ask Codex:
 
 ```text
 Use $rb-wiki-ingest to process this wiki's inbox.
@@ -87,7 +87,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 tools/wiki_cron.py inbox
 
 Successful ingest copies files into `sources/raw/`, records hashes in `sources/_source_registry.yml`, creates reference pages in `wiki/references/`, rebuilds routing assets, runs quick checks, and moves processed inbox files into `inbox/processed/YYYY-MM-DD/`.
 
-Unsupported, failed, ambiguous, encrypted, or very large files stay in `inbox/` for review.
+PDF files are preserved unchanged in `sources/raw/`. When text extraction is available, generated text derivatives are written under `sources/derived/` for search and review. Unsupported, failed, ambiguous, encrypted, or very large files stay in `inbox/` for review.
 
 ## Maintenance
 

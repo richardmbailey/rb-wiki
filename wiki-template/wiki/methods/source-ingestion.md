@@ -33,7 +33,7 @@ The method preserves evidence before interpretation, then makes the source visib
 
 # Inputs
 
-- Markdown or text files in `inbox/`.
+- Markdown, text, or PDF files in `inbox/`.
 - Existing source registry entries.
 - Existing wiki routing assets.
 
@@ -50,6 +50,7 @@ The method preserves evidence before interpretation, then makes the source visib
 - Duplicate source hash.
 - Unsupported file type.
 - Missing hash or broken raw path.
+- Failed or empty PDF text extraction, including scanned or encrypted PDFs that require manual review.
 - Unclear source metadata that needs human review.
 
 # Related Tools
@@ -64,4 +65,3 @@ The method preserves evidence before interpretation, then makes the source visib
 # Change History
 
 - `2026-07-09`: Created from the seed design source.
-

@@ -14,4 +14,6 @@ The ingest flow preserves raw evidence before synthesis.
 10. Move successfully processed direct inbox files into `inbox/processed/YYYY-MM-DD/`.
 11. Write an ingest report under `reports/ingest/`.
 
+PDF files are supported when text extraction is available. The original PDF is copied unchanged into `sources/raw/`, while extracted text is written as a generated derivative under `sources/derived/` for search and review. The derivative is not raw evidence and must not replace the preserved PDF.
+
 Unsupported, ambiguous, failed, encrypted, or very large inbox files stay in `inbox/` for review. The agent must not delete inbox or raw files without explicit approval.

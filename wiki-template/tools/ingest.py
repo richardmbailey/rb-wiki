@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ingest Markdown and text files from inbox into the source registry."""
+"""Ingest supported source files from inbox into the source registry."""
 
 from __future__ import annotations
 
@@ -9,10 +9,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+from pdf_extract import PdfExtractionResult, ensure_pdf_text_derivative, is_pdf_path
 from source_registry import add_source
 from wiki_lib import REPORTS_DIR, ROOT, now_utc, run_timestamp_utc, today_utc, unique_sibling_path
 
-SUPPORTED_SUFFIXES = {".md", ".markdown", ".txt", ".text"}
+SUPPORTED_SUFFIXES = {".md", ".markdown", ".txt", ".text", ".pdf"}
 
 
 def title_from_source_id(source_id: str) -> str:
@@ -70,7 +71,11 @@ def move_processed_inbox_file(path: Path) -> Path | None:
     return target
 
 
-def create_reference_page(entry: dict[str, str], source_path: Path) -> tuple[Path, bool]:
+def create_reference_page(
+    entry: dict[str, str],
+    source_path: Path,
+    pdf_extraction: PdfExtractionResult | None = None,
+) -> tuple[Path, bool]:
     reference_path = ROOT / entry["reference_path"]
     if reference_path.exists():
         return reference_path, False
@@ -79,7 +84,26 @@ def create_reference_page(entry: dict[str, str], source_path: Path) -> tuple[Pat
     timestamp = now_utc()
     date = today_utc()
     source_display = display_path(source_path)
-    description = f"Reference page for the ingested source `{source_path.name}`."
+    if pdf_extraction:
+        description = f"Reference page for the ingested PDF source `{source_path.name}`."
+        derived_field = f'derived_text: "{pdf_extraction.derived_path}"'
+        extraction_fields = f"""extraction_status: "{pdf_extraction.status}"
+extraction_method: "{pdf_extraction.method}"
+extracted_text_chars: {pdf_extraction.char_count}"""
+        extraction_section = f"""# Extraction Status
+
+- Status: `{pdf_extraction.status}`
+- Method: `{pdf_extraction.method}`
+- Extracted text: `{pdf_extraction.derived_path or 'not available'}`
+- Note: {pdf_extraction.note}
+
+The PDF in `sources/raw/` remains the immutable source. Extracted text is a generated derivative for search and review only.
+"""
+    else:
+        description = f"Reference page for the ingested source `{source_path.name}`."
+        derived_field = 'derived_text: ""'
+        extraction_fields = ""
+        extraction_section = ""
     body = f"""---
 type: Reference
 title: "{title}"
@@ -99,9 +123,13 @@ hash_sha256: "{entry['hash_sha256']}"
 date_published: unknown
 date_ingested: {entry['date_ingested']}
 authors: []
+{derived_field}
+{extraction_fields}
 ---
 
 {description}
+
+{extraction_section}
 
 # Source Summary
 
@@ -152,7 +180,7 @@ def write_report(lines: list[str]) -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Ingest Markdown and text files into the LLM-wiki")
+    parser = argparse.ArgumentParser(description="Ingest supported source files into the LLM-wiki")
     parser.add_argument("paths", nargs="+", help="Files or directories to ingest")
     parser.add_argument("--skip-validation", action="store_true")
     args = parser.parse_args(argv)
@@ -176,7 +204,12 @@ def main(argv: list[str] | None = None) -> int:
             continue
         try:
             entry, duplicate = add_source(path)
-            reference_path, created = create_reference_page(entry, path)
+            pdf_extraction = None
+            if is_pdf_path(path):
+                pdf_extraction = ensure_pdf_text_derivative(entry, ROOT / entry["raw_path"])
+                if pdf_extraction.status in {"failed", "no-text"}:
+                    raise RuntimeError(f"PDF text extraction {pdf_extraction.status}: {pdf_extraction.note}")
+            reference_path, created = create_reference_page(entry, path, pdf_extraction)
         except Exception as exc:
             failed += 1
             report_lines.append(f"- FAIL `{display_path(path)}`: {exc}")
@@ -185,9 +218,15 @@ def main(argv: list[str] | None = None) -> int:
         state = "duplicate source" if duplicate else "new source"
         raw_state = "; restored missing raw source" if entry.pop("_raw_restored", "") == "true" else ""
         ref_state = "created reference" if created else "reference already existed"
+        extraction_state = ""
+        if pdf_extraction:
+            extraction_state = (
+                f"; PDF extraction `{pdf_extraction.status}`"
+                + (f" -> `{pdf_extraction.derived_path}`" if pdf_extraction.derived_path else f": {pdf_extraction.note}")
+            )
         report_lines.append(
             f"- OK `{display_path(path)}`: {state}{raw_state}; {ref_state}; "
-            f"`{entry['source_id']}` -> `{entry['raw_path']}`."
+            f"`{entry['source_id']}` -> `{entry['raw_path']}`{extraction_state}."
         )
         if is_direct_inbox_file(path):
             processed_inbox_files.append(path)

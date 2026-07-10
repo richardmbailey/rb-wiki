@@ -31,7 +31,7 @@ python3 tools/query.py graph neighbors /concepts/llm-wiki.md
 
 ## Adding Sources
 
-Drop Markdown or text files into `inbox/`, then either ask Codex:
+Drop Markdown, text, or PDF files into `inbox/`, then either ask Codex:
 
 ```text
 Use $rb-wiki-ingest to process this wiki's inbox.
@@ -43,7 +43,7 @@ or run manually:
 python3 tools/ingest.py inbox/
 ```
 
-The ingest flow copies raw inputs into `sources/raw/`, registers hashes, creates reference pages, rebuilds the index and graph, moves successfully processed direct inbox files into `inbox/processed/YYYY-MM-DD/`, and writes an ingest report. Unsupported or ambiguous files remain in `inbox/` for review.
+The ingest flow copies raw inputs into `sources/raw/`, registers hashes, creates reference pages, rebuilds the index and graph, moves successfully processed direct inbox files into `inbox/processed/YYYY-MM-DD/`, and writes an ingest report. PDF files are preserved as raw PDFs and, when text extraction is available, get generated text derivatives under `sources/derived/` for search and review. Unsupported or ambiguous files remain in `inbox/` for review.
 
 For the cron-safe trigger that moves already registered and complete inbox copies out of the active inbox, run:
 

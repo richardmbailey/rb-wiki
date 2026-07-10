@@ -45,6 +45,7 @@ If multiple wiki base directories are present, choose the one the user named. If
 - Raw sources in `sources/raw/` are immutable.
 - Successfully processed direct inbox files may move to `inbox/processed/YYYY-MM-DD/`; do not delete them.
 - Unsupported, failed, encrypted, ambiguous, or very large files stay in `inbox/` for review.
+- PDF files are supported only when text extraction succeeds; the raw PDF remains immutable and generated extracted text is stored as a derivative under `sources/derived/`.
 - Do not delete files, merge pages, rename high-degree pages, resolve serious contradictions, or change schemas without explicit approval.
 - Do not read the whole wiki to decide relevance. Route first.
 
@@ -52,6 +53,7 @@ If multiple wiki base directories are present, choose the one the user named. If
 
 - An ingest report in `reports/ingest/`.
 - Any new raw source copies in `sources/raw/`.
+- Any generated PDF text derivatives in `sources/derived/`.
 - Any new reference pages in `wiki/references/`.
 - Rebuilt `wiki/index.md` and `.wiki_cache/graph.json` when content changed.
 - A concise final summary with validation results and review items.

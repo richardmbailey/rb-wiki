@@ -14,7 +14,7 @@ sys.dont_write_bytecode = True
 from source_registry import parse_registry, registered_entry_complete
 from wiki_lib import REPORTS_DIR, ROOT, run_timestamp_utc, sha256_file, today_utc, unique_sibling_path
 
-SUPPORTED_SUFFIXES = {".md", ".markdown", ".txt", ".text"}
+SUPPORTED_SUFFIXES = {".md", ".markdown", ".txt", ".text", ".pdf"}
 
 
 def run_tool(*args: str) -> tuple[int, str]:
