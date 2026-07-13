@@ -1,0 +1,217 @@
+The core wiki model is strong: immutable evidence, Markdown portability, provenance, deterministic validation, graph routing, and conservative editorial boundaries all held up well.
+
+But Hearty exposed the gap between:
+
+“An agent can help maintain this wiki”
+and
+
+“Several autonomous agent runs can safely operate this wiki all day”
+The repository does briefly distinguish manual and scheduled work:
+
+- the ingest skill allows safe cited edits in a manual session;
+- scheduled inbox jobs should generally create references and propose synthesis rather than edit substantive pages;
+- new-wiki setup proposes inbox/nightly/weekly automations.
+
+But that distinction is currently prose guidance, not a complete, enforceable operating model. We had to create and coordinate the acquisition → ingest → synthesis lanes ourselves, then discovered the consequences: overlapping mutations, a very dirty worktree, report accumulation, and a needs-review status that is doing several jobs at once.
+
+Recommended upstream additions
+
+P0 — make agent operation a first-class mode
+
+**Agent operating modes**
+• What it should specify: manual-assist, scheduled-propose, authorised-autonomous-apply
+• Why our Hearty run needs it: Current instructions describe manual vs scheduled behaviour, but nothing records which mode a run is actually in.
+
+**Authority record**
+• What it should specify: Scope, allowed page types, named owner, expiry, stop conditions, and required validation
+• Why our Hearty run needs it: We had to add an explicit local authorisation before Hearty could perform substantive scheduled synthesis. That is generic agent governance, not cardiology-specific.
+
+**Lane model**
+• What it should specify: First-class acquire → ingest → synthesize → maintain workflow, with inputs, outputs, no-op/blocked/failed states, and writable paths
+• Why our Hearty run needs it: The template defaults cover inbox, nightly, and weekly checks, but not self-directed acquisition or authorised synthesis. We had to invent the three-lane schedule and its hand-offs.
+
+**Run contract**
+• What it should specify: Required preflight, source snapshot, base commit, run ID, validation set, report location, and closure state
+• Why our Hearty run needs it: A cron time is not a dependency. A :00 run may start late, overlap the next job, or leave partial work behind
+
+P0 — make mutating runs safe
+
+**One-writer guard**
+• Proposed behaviour: A repository/worktree lock around any mutation of the registry, inbox, raw-source records, index, graph, log, or reports.
+
+**Atomic/recoverable operations**
+• Proposed behaviour: Source ingest should have explicit states: captured → registered → reference-created → validated → archived, with safe resume after failure.
+
+**Git-aware preflight**
+• Proposed behaviour: Scheduled jobs either require a clean expected base commit, or run in a dedicated worktree/branch. They should never casually operate in a mixed worktree.
+
+**Scoped commit closure**
+• Proposed behaviour: Each successful run either commits only its declared paths or ends in an explicit manual-commit-required state with a precise path list. No git add .; that is how archaeology gets invented.
+
+This is the largest gap in the live experiment. The cardiology wiki currently has 557 dirty paths because scheduled work quite sensibly refuses to commit when it finds mixed prior changes—but the upstream workflow offers no safe route out of that state.
+
+The agent instructions I would add
+
+I would add a compact canonical document, perhaps:
+docs/AGENT_OPERATIONS.md
+schema/agent_policy.yml
+schema/report_contract.yml
+
+The runbook should say, concretely:
+1. Read AGENTS.md, wiki manifest, current index, latest reports, and git state.
+2. Detect operating mode and validate its authority record.
+3. Acquire a per-wiki mutation lock before changing files.
+4. Record run_id, start time, base commit, mode, and writable paths.
+5. Perform only the lane’s authorised work.
+6. Run required deterministic checks.
+7. Write a machine-readable report plus human-readable Markdown.
+8. Commit only declared paths, or mark the run manual-commit-required.
+9. Release the lock.
+10. On failure: preserve raw evidence, leave a recoverable state, and report the exact next action.
+
+The important upgrade is that agents would no longer infer operational authority from a paragraph in a prompt. They would receive it from inspectable repository state.
+
+P1 — improve the evidence/review lifecycle
+
+1. Split needs-review into meaningful states
+
+Our current experience makes this the clearest schema rough edge.
+
+A reference can be:
+
+- successfully preserved and hash-validated;
+- structurally valid and linked into the graph;
+- based only on abstract/metadata rather than full text;
+- clinically appraised;
+- incorporated into a bounded synthesis;
+- human/expert-reviewed.
+
+At present, most of those conditions collapse into needs-review.
+
+I would not replace the existing status field with a huge taxonomy overnight. Instead, retain it for compatibility and add separate, orthogonal metadata such as:
+
+ingest_state: validated
+integration_state: linked
+evidence_access: metadata-and-abstract
+appraisal_state: pending-full-text
+review_state: agent-reviewed
+
+That prevents a fully valid, linked source card from looking identical to a failed inbox item. It also gives agents a real queue to work from rather than a very large bucket labelled “somebody should look at this.”
+
+2. Make lint status-aware
+
+The current lint correctly warns about true structural faults, but a newly ingested Reference without incoming links is not necessarily a broken knowledge node.
+
+Upstream lint should distinguish:
+
+Broken link, invalid frontmatter, hash mismatch
+• Suggested severity: Error
+
+New reference awaiting integration, below grace period
+• Suggested severity: Info
+
+Unintegrated reference after configurable age
+• Suggested severity: Warning
+
+High-priority source, stale and unintegrated
+• Suggested severity: Action required
+
+Orphaned synthesis or high-degree concept page
+• Suggested severity: Warning / high priority
+
+That prevents every healthy growing wiki from living permanently in Yellow.
+
+3. Tighten provenance validation
+
+The tools validate source hashes and basic page structure, but the next level should verify the whole chain:
+
+raw source
+↔ registry entry
+↔ Reference page
+↔ ordinary page `sources:` field
+
+...Specifically, the repo should ensure that:
+
+- every cited sources: path resolves to a Reference page;
+- each reference maps to a valid registry entry and immutable raw source;
+- reference metadata such as source ID, path, and hash reconcile with the registry;
+- unique IDs, hashes, and raw paths cannot silently diverge.
+
+This is especially useful when autonomous agents start editing and re-linking material at volume.
+
+P1 — reports, maintenance, and retrieval should be honest about capability
+
+**Report pile-up**
+• Improvement: Define retention: retain durable evidence/audit reports; rotate routine all-pass telemetry; maintain a stable latest-status summary. Hearty generated hundreds of timestamped reports in a couple of days.
+
+**“Full lint” overclaims**
+• Improvement: Implement or clearly label semantic checks such as overview drift, staleness, coverage gaps, and contradiction candidates as needs-agent-review. Do not print a cheerful Pass for a check that was not actually performed.
+
+**Search capability ambiguity** (2/3)
+
+
+• Improvement: Expose a capabilities --json command. If BM25/vector/hybrid are not installed, say so—or implement optional adapters. Do not silently give lexical search a fashionable fake moustache.
+
+**Agent-readable reports**
+• Improvement: Keep Markdown, but add structured JSON/YAML: run ID, base commit, severity, check ID, affected paths, source IDs, approval requirements, and recommended action.
+
+**HTML/source-format consistency**
+• Improvement: Either support a safe raw-HTML + derived-text route or reject it explicitly at intake. Registry/inbox capability should agree.
+
+P2 — make the template maintainable over time
+
+The current template is copied into a new wiki, but there is no clear upgrade path when rb-wiki itself improves.
+
+Add:
+# wiki-manifest.yml
+template_version: 0.2
+profile_version: llm-wiki-profile/0.2
+enabled_capabilities:
+  - structured-reports
+  - provenance-check
+policy_mode: scheduled-propose
+local_overrides:
+  - EXAMPLE_BRIEF.md
+
+That lets a subject wiki adopt upstream tool improvements without overwriting its local domain policy.
+
+P2 — tests for unattended operation
+
+The repo is currently light on tests: the live suite contains two passing PDF-ingestion tests. Good as far as it goes, but autonomous operation needs integration coverage for:
+
+- concurrent-run locking;
+- repeated/idempotent ingestion;
+- failure after raw preservation but before reference creation;
+- dirty-worktree handling;
+- review-gate enforcement;
+- registry/reference/source mismatch;
+- report schema validity;
+- scheduled mode being unable to make forbidden substantive edits;
+- recovery/resume without duplicate records.
+
+What should remain local, not upstream
+
+We should keep the upstream project generic. The following belong in the subject wiki’s own policy layer:
+
+- source hierarchy and admissibility rules;
+- acquisition queries, source providers, and discovery budgets;
+- domain ontology, tags, aliases, and page templates;
+- clinical, legal, financial, or other high-stakes evidence boundaries;
+- named reviewers and approval thresholds;
+- cadence, notifications, Git remote/backup arrangements;
+- domain-specific contradiction and staleness criteria.
+
+For cardiology, the ACC/AHA/HFSA/SCAI hierarchy and “do not derive clinical recommendations from a MEDLINE abstract” rule are absolutely right—but they should be supplied through a domain-policy adapter, not baked into a general wiki toolkit.
+
+Recommendation
+
+I would propose a focused rb-wiki v0.2: Human + Agent Operations release, in two steps:
+
+1. Operational specification first  
+   Add the operating modes, authority/approval record, lane/run contract, report contract, and capability matrix. This alone would have prevented much of the ambiguity we had to solve locally.
+
+2. Small supporting tools second  
+   Add locking, transactional ingest states, provenance checks, structured reports, Git closure support, and tests.
+
+
+

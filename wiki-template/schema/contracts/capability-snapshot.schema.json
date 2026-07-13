@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-capabilities/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "digest_sha256", "capabilities"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-capabilities/0.2"},
+    "digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["available"],
+        "properties": {
+          "available": {"type": "boolean"},
+          "implementation": {"type": ["string", "null"]},
+          "reason": {"type": "string"},
+          "alias_for": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

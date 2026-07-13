@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-doctor-report/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "created_at", "wiki_id", "overall", "diagnostics", "capabilities"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-doctor-report/0.2"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "wiki_id": {"type": "string"},
+    "overall": {"enum": ["healthy", "attention", "blocked"]},
+    "diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
+    "capabilities": {"type": "object"}
+  },
+  "$defs": {
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["diagnostic_id", "status", "severity", "evidence", "recommended_action"],
+      "properties": {
+        "diagnostic_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+        "status": {"enum": ["pass", "info", "warn", "fail"]},
+        "severity": {"enum": ["info", "low", "medium", "high", "critical"]},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "recommended_action": {"type": "string"}
+      }
+    }
+  }
+}

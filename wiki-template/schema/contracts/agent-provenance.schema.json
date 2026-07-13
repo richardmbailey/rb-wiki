@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "rb-wiki-agent-provenance/0.2",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "agent_label", "runtime", "provider_model", "prompt_policy_digest", "trace_reference", "started_at", "finished_at", "tool_call_summary"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-agent-provenance/0.2"},
+    "agent_label": {"type": ["string", "null"], "maxLength": 128},
+    "runtime": {"type": ["string", "null"], "maxLength": 128},
+    "provider_model": {"type": ["string", "null"], "maxLength": 128},
+    "prompt_policy_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "trace_reference": {"type": ["string", "null"], "pattern": "^(?:reports|\\.wiki_state)/[A-Za-z0-9._/-]{1,240}$"},
+    "started_at": {"type": ["string", "null"], "format": "date-time"},
+    "finished_at": {"type": ["string", "null"], "format": "date-time"},
+    "tool_call_summary": {"type": "object", "maxProperties": 32, "additionalProperties": {"type": "integer", "minimum": 0, "maximum": 100000}}
+  }
+}

@@ -17,6 +17,19 @@ def tokenize(text: str) -> list[str]:
 
 
 def command_search(mode: str, query: str, limit: int) -> int:
+    if mode != "search":
+        print(
+            json.dumps(
+                {
+                    "error": "unavailable-capability",
+                    "capability": f"{mode}-search",
+                    "available": False,
+                    "recommended_action": "use `query.py search` for implemented lexical search",
+                },
+                sort_keys=True,
+            )
+        )
+        return 2
     query_terms = tokenize(query)
     if not query_terms:
         print("FAIL: search query is empty")
@@ -44,8 +57,6 @@ def command_search(mode: str, query: str, limit: int) -> int:
         print(f"No {mode} hits for: {query}")
         return 0
 
-    if mode in {"bm25", "hybrid", "vector"}:
-        print(f"NOTE: `{mode}` currently uses the simple lexical search backend.")
     for score, path, title, description in scored[:limit]:
         print(f"{score}\t{path}\t{title}\t{description}")
     return 0
@@ -150,4 +161,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

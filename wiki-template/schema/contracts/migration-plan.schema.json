@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-migration-plan/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "migration_id", "idempotency_key", "wiki_root", "from_profile", "to_profile", "status", "changes", "preserved_overrides", "manual_review", "commands", "risks", "required_approvals", "expected_validation", "generated_patch"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-migration-plan/0.2"},
+    "plan_id": {"type": "string"},
+    "migration_id": {"type": "string"},
+    "idempotency_key": {"type": "string"},
+    "wiki_root": {"type": "string"},
+    "from_profile": {"type": "string"},
+    "to_profile": {"type": "string"},
+    "status": {"enum": ["no-op", "ready", "manual-review", "blocked"]},
+    "changes": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["path", "operation", "classification", "fields", "before_sha256", "after_sha256"], "properties": {"path": {"type": "string"}, "operation": {"enum": ["create", "replace"]}, "classification": {"enum": ["mechanical"]}, "fields": {"type": "array", "items": {"type": "string"}}, "before_sha256": {"type": ["string", "null"]}, "after_sha256": {"type": "string"}}}},
+    "preserved_overrides": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "manual_review": {"type": "array", "items": {"type": "string"}},
+    "commands": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "required_approvals": {"type": "array", "items": {"type": "string"}},
+    "expected_validation": {"type": "array", "items": {"type": "string"}},
+    "generated_patch": {"type": "string"}
+  }
+}

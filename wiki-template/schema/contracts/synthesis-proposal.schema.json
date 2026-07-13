@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-synthesis-proposal/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "proposal_id", "run_id", "created_at", "agent", "intended_use", "action_class", "consequence_tier", "affected_pages", "source_ids", "agent_findings", "deterministic_evidence", "planned_claims", "planned_sections", "uncertainties", "contradictions", "checks_performed", "required_approvals", "policy_snapshot", "apply_payload", "proposal_digest"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-synthesis-proposal/0.2"},
+    "proposal_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,127}$"},
+    "run_id": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "agent": {"type": "object", "additionalProperties": false, "required": ["agent_label", "runtime_label"], "properties": {"agent_label": {"type": "string", "minLength": 1}, "runtime_label": {"type": "string", "minLength": 1}}},
+    "intended_use": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "action_class": {"enum": ["new-synthesis", "update-synthesis", "semantic-maintenance", "contradiction-resolution"]},
+    "consequence_tier": {"enum": ["routine", "material", "high-consequence"]},
+    "affected_pages": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^wiki/(?!index\\.md$|log\\.md$)[A-Za-z0-9._/-]+\\.md$"}},
+    "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "agent_findings": {"type": "array", "items": {"type": "string"}},
+    "deterministic_evidence": {"type": "array", "items": {"type": "string"}},
+    "planned_claims": {"type": "array", "items": {"type": "string"}},
+    "planned_sections": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
+    "contradictions": {"type": "array", "items": {"type": "string"}},
+    "checks_performed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "required_approvals": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "policy_snapshot": {"type": "object", "additionalProperties": false, "required": ["agent_policy_id", "consequence_policy_version", "capabilities"], "properties": {"agent_policy_id": {"type": "string"}, "consequence_policy_version": {"type": "string"}, "capabilities": {"type": "object", "additionalProperties": false, "required": ["schema_version", "digest_sha256", "capabilities"], "properties": {"schema_version": {"const": "rb-wiki-capabilities/0.2"}, "digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "capabilities": {"type": "object"}}}}},
+    "apply_payload": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/payload"}]},
+    "proposal_digest": {"oneOf": [{"type": "null"}, {"type": "string", "pattern": "^[a-f0-9]{64}$"}]}
+  },
+  "allOf": [
+    {"if": {"properties": {"consequence_tier": {"const": "high-consequence"}}, "required": ["consequence_tier"]}, "then": {"properties": {"apply_payload": {"$ref": "#/$defs/payload"}, "proposal_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}, "required": ["apply_payload", "proposal_digest"]}}
+  ],
+  "$defs": {
+    "payload": {"type": "object", "additionalProperties": false, "required": ["kind", "files"], "properties": {"kind": {"const": "target-content"}, "files": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["path", "content", "hash_sha256"], "properties": {"path": {"type": "string", "pattern": "^wiki/(?!index\\.md$|log\\.md$)[A-Za-z0-9._/-]+\\.md$"}, "content": {"type": "string"}, "hash_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}}}}
+  }
+}

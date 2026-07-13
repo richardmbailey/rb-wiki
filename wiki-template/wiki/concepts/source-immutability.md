@@ -8,10 +8,13 @@ timestamp: 2026-07-09T00:00:00Z
 
 created: 2026-07-09
 status: active
-profile: llm-wiki-profile/0.1
+profile: llm-wiki-profile/0.2
 sources:
-  - "/references/2026-07-09-llm-wiki-system-instructions.md"
+  - "/references/2026-07-13-llm-wiki-system-instructions.md"
 confidence: high
+review_state: reviewed
+review_priority: normal
+consequence_tier: ordinary
 ---
 
 Source immutability is the rule that raw evidence files are preserved without editing, renaming, or deletion by agents.
@@ -34,7 +37,7 @@ Files under `sources/raw/` are the evidence layer. Agents may create reference p
 
 # Citations
 
-- [LLM-Wiki System Instructions](/references/2026-07-09-llm-wiki-system-instructions.md)
+- [LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md)
 
 # Change History
 

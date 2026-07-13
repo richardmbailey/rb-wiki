@@ -1,0 +1,25 @@
+schema_version: rb-wiki-lane-contract/0.2
+lane_id: semantic-maintain
+controller_lane: semantic
+purpose: Perform attributed editorial assessment or bounded changes from a validated proposal.
+allowed_modes: [manual-assist, authorised-autonomous-apply]
+actions_by_mode:
+  manual-assist: edit-wiki-pages
+  authorised-autonomous-apply: edit-wiki-pages
+closure_profile_by_mode:
+  manual-assist: manual-semantic
+  authorised-autonomous-apply: autonomous-semantic-apply
+consumes: [source-registry, reference-pages, synthesis-proposal, approval-record]
+produces: [wiki-pages, semantic-output, run-record]
+produces_by_mode:
+  manual-assist: [wiki-pages, run-record]
+  authorised-autonomous-apply: [wiki-pages, semantic-output, run-record]
+required_produces_by_mode:
+  manual-assist: [wiki-pages, run-record]
+  authorised-autonomous-apply: [wiki-pages, semantic-output, run-record]
+substantive_wiki_edits: true
+substantive_wiki_edit_modes: [manual-assist, authorised-autonomous-apply]
+required_checks: [quick-lint, provenance, proposal-payload, semantic-output]
+required_checks_by_mode:
+  manual-assist: [quick-lint, provenance]
+  authorised-autonomous-apply: [quick-lint, provenance, proposal-payload, semantic-output]

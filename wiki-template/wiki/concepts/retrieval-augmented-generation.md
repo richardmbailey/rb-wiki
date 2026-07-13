@@ -8,10 +8,13 @@ timestamp: 2026-07-09T00:00:00Z
 
 created: 2026-07-09
 status: needs-review
-profile: llm-wiki-profile/0.1
+profile: llm-wiki-profile/0.2
 sources:
-  - "/references/2026-07-09-llm-wiki-system-instructions.md"
+  - "/references/2026-07-13-llm-wiki-system-instructions.md"
 confidence: low
+review_state: pending
+review_priority: normal
+consequence_tier: ordinary
 ---
 
 Retrieval-augmented generation retrieves source snippets at query time, while an LLM-wiki stores durable synthesis for reuse.
@@ -36,7 +39,7 @@ This seed page records RAG only as the contrast class used by the LLM-wiki desig
 
 # Citations
 
-- [LLM-Wiki System Instructions](/references/2026-07-09-llm-wiki-system-instructions.md)
+- [LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md)
 
 # Change History
 

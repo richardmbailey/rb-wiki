@@ -8,10 +8,13 @@ timestamp: 2026-07-09T00:00:00Z
 
 created: 2026-07-09
 status: needs-review
-profile: llm-wiki-profile/0.1
+profile: llm-wiki-profile/0.2
 sources:
-  - "/references/2026-07-09-llm-wiki-system-instructions.md"
+  - "/references/2026-07-13-llm-wiki-system-instructions.md"
 confidence: medium
+review_state: pending
+review_priority: normal
+consequence_tier: ordinary
 ---
 
 Compiled knowledge is durable synthesis stored in the wiki so future queries can reuse it instead of reconstructing it from scratch.
@@ -34,7 +37,7 @@ In this wiki, compiled knowledge means source-backed pages that preserve useful 
 
 # Citations
 
-- [LLM-Wiki System Instructions](/references/2026-07-09-llm-wiki-system-instructions.md)
+- [LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md)
 
 # Change History
 

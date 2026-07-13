@@ -1,0 +1,17 @@
+schema_version: rb-wiki-migrations/0.2
+migrations:
+  - migration_id: v01-to-v02
+    from_profile: llm-wiki-profile/0.1
+    to_profile: llm-wiki-profile/0.2
+    classification: mechanical-reviewed-patch
+    reversible: true
+    idempotency_key: rb-wiki-v01-to-v02-20260713
+    preconditions:
+      - Raw evidence is readable and will not be changed.
+      - Local overrides are declared before patch generation.
+      - Ambiguous subject policy is routed to manual review.
+    postconditions:
+      - Manifest and operational contracts validate as v0.2.
+      - Existing ordinary profile 0.1 pages remain readable.
+      - Complete Reference pages have explicit lifecycle defaults.
+      - Provenance and quick lint pass.

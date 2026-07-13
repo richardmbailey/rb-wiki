@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-run-record/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "wiki_id", "lane", "mode", "authority_id", "lane_contract", "state", "result", "started_at", "updated_at", "finished_at", "heartbeat_at", "lease_expires_at", "base_commit", "initial_status", "initial_snapshot", "final_snapshot", "changed_paths", "writable_paths", "checks", "capabilities", "agent_provenance", "material", "report_class", "durable_record", "commit_hash", "content_manifest", "transaction", "transaction_stage", "next_action", "error"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-run-record/0.2"},
+    "run_id": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{12}$"},
+    "wiki_id": {"type": "string", "minLength": 1},
+    "lane": {"enum": ["maintain", "acquire", "ingest", "synthesize", "semantic", "governance"]},
+    "mode": {"enum": ["manual-assist", "scheduled-propose", "authorised-autonomous-apply"]},
+    "authority_id": {"type": "string", "minLength": 1},
+    "lane_contract": {"$ref": "#/$defs/laneBinding"},
+    "state": {"enum": ["created", "locked", "preflight", "running", "validating", "committed-recovery-required", "manual-commit-required", "approval-required", "completed", "blocked", "failed", "cancelled"]},
+    "result": {"type": ["string", "null"], "enum": ["success", "no-op", "blocked", "failed", "cancelled", "committed-recovery-required", "manual-commit-required", "approval-required", null]},
+    "started_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "finished_at": {"type": ["string", "null"], "format": "date-time"},
+    "heartbeat_at": {"type": ["string", "null"], "format": "date-time"},
+    "lease_expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "base_commit": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40,64}$"},
+    "initial_status": {"type": "array", "items": {"type": "string"}},
+    "initial_snapshot": {"type": "array", "items": {"$ref": "#/$defs/statusEntry"}},
+    "final_snapshot": {"type": "array", "items": {"$ref": "#/$defs/statusEntry"}},
+    "changed_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "writable_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check_id", "status", "summary", "provenance"],
+        "properties": {
+          "check_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+          "status": {"enum": ["pass", "warn", "fail", "blocked"]},
+          "summary": {"type": "string", "maxLength": 4000},
+          "provenance": {"enum": ["external-attestation", "controller-executed"]},
+          "evidence_ref": {"type": "string", "pattern": "^reports/[A-Za-z0-9._/-]{1,232}$"},
+          "exit_code": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "capabilities": {"type": "object", "additionalProperties": false, "required": ["schema_version", "digest_sha256", "capabilities"], "properties": {"schema_version": {"const": "rb-wiki-capabilities/0.2"}, "digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "capabilities": {"type": "object"}}},
+    "agent_provenance": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/agentProvenance"}]},
+    "material": {"type": "boolean"},
+    "report_class": {"enum": ["ephemeral-telemetry", "durable-mutation", "durable-failure-recovery", "durable-approval", "durable-governance"]},
+    "durable_record": {"type": ["string", "null"]},
+    "commit_hash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40,64}$"},
+    "content_manifest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "transaction": {"type": ["string", "null"], "pattern": "^\\.wiki_state/transactions/[0-9]{8}T[0-9]{6}Z-[a-f0-9]{12}\\.json$"},
+    "transaction_stage": {"type": ["string", "null"], "enum": ["prepared", "commit-created", "branch-moved", "index-refreshed", "receipt-written", "reconciled", null]},
+    "next_action": {"type": "string", "maxLength": 2000},
+    "error": {"type": ["string", "null"], "maxLength": 8000}
+  },
+  "$defs": {
+    "laneBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "lane_id", "controller_lane", "path", "digest_sha256"],
+      "properties": {
+        "schema_version": {"const": "rb-wiki-lane-contract/0.2"},
+        "lane_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+        "controller_lane": {"enum": ["maintain", "acquire", "ingest", "synthesize", "semantic", "governance"]},
+        "path": {"type": "string", "pattern": "^schema/lanes/[a-z0-9-]+\\.yml$"},
+        "digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "statusEntry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "path"],
+      "properties": {
+        "status": {"type": "string", "minLength": 2, "maxLength": 2},
+        "path": {"type": "string", "minLength": 1}
+      }
+    },
+    "agentProvenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "agent_label", "runtime", "provider_model", "prompt_policy_digest", "trace_reference", "started_at", "finished_at", "tool_call_summary"],
+      "properties": {
+        "schema_version": {"const": "rb-wiki-agent-provenance/0.2"},
+        "agent_label": {"type": ["string", "null"], "maxLength": 128},
+        "runtime": {"type": ["string", "null"], "maxLength": 128},
+        "provider_model": {"type": ["string", "null"], "maxLength": 128},
+        "prompt_policy_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "trace_reference": {"type": ["string", "null"], "pattern": "^(?:reports|\\.wiki_state)/[A-Za-z0-9._/-]{1,240}$"},
+        "started_at": {"type": ["string", "null"], "format": "date-time"},
+        "finished_at": {"type": ["string", "null"], "format": "date-time"},
+        "tool_call_summary": {"type": "object", "maxProperties": 32, "additionalProperties": {"type": "integer", "minimum": 0, "maximum": 100000}}
+      }
+    }
+  }
+}

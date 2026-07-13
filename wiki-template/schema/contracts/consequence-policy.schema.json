@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-consequence-policy/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "policy_version", "tier_order", "action_minimum_tiers", "tiers", "core_invariants"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-consequence-policy/0.2"},
+    "policy_id": {"type": "string"},
+    "policy_version": {"type": "string"},
+    "tier_order": {"const": ["routine", "material", "high-consequence"]},
+    "action_minimum_tiers": {"type": "object", "additionalProperties": false, "required": ["new-synthesis", "update-synthesis", "semantic-maintenance", "contradiction-resolution"], "properties": {"new-synthesis": {"enum": ["routine", "material", "high-consequence"]}, "update-synthesis": {"enum": ["routine", "material", "high-consequence"]}, "semantic-maintenance": {"enum": ["routine", "material", "high-consequence"]}, "contradiction-resolution": {"enum": ["routine", "material", "high-consequence"]}}},
+    "tiers": {"type": "object", "additionalProperties": false, "required": ["routine", "material", "high-consequence"], "properties": {"routine": {"$ref": "#/$defs/tier"}, "material": {"$ref": "#/$defs/tier"}, "high-consequence": {"$ref": "#/$defs/tier"}}},
+    "core_invariants": {"type": "object", "additionalProperties": false, "required": ["raw_immutable", "provenance_required", "authority_required", "exact_payload_for_high_consequence"], "properties": {"raw_immutable": {"const": true}, "provenance_required": {"const": true}, "authority_required": {"const": true}, "exact_payload_for_high_consequence": {"const": true}}}
+  },
+  "$defs": {"tier": {"type": "object", "additionalProperties": false, "required": ["approval_required", "required_checks", "approver_roles"], "properties": {"approval_required": {"type": "boolean"}, "required_checks": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}, "approver_roles": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}}}}
+}

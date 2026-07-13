@@ -3,13 +3,26 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
+import hashlib
+import os
 import re
 from collections import defaultdict, deque
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
+
+from run_lib import (
+    MAX_YAML_BYTES,
+    ContractError,
+    RunError,
+    atomic_write_text,
+    require_contract_dependencies,
+    symlink_component,
+    validate_contract,
+)
+from fs_safety import enumerate_regular_files
+from contracts import load_json_contract
 
 ROOT = Path(__file__).resolve().parents[1]
 WIKI_DIR = ROOT / "wiki"
@@ -19,7 +32,8 @@ CACHE_DIR = ROOT / ".wiki_cache"
 REPORTS_DIR = ROOT / "reports"
 
 RESERVED_NAMES = {"index.md", "log.md"}
-LOCAL_PROFILE = "llm-wiki-profile/0.1"
+LOCAL_PROFILE = "llm-wiki-profile/0.2"
+SUPPORTED_PROFILES = {"llm-wiki-profile/0.1", "llm-wiki-profile/0.2"}
 REQUIRED_FIELDS = [
     "type",
     "title",
@@ -83,19 +97,28 @@ def unique_sibling_path(path: Path) -> Path:
 
 
 def root_relative(path: Path) -> str:
-    return path.resolve().relative_to(ROOT).as_posix()
+    return path.absolute().relative_to(ROOT.absolute()).as_posix()
 
 
 def wiki_relative(path: Path) -> str:
-    return "/" + path.resolve().relative_to(WIKI_DIR).as_posix()
+    return "/" + path.absolute().relative_to(WIKI_DIR.absolute()).as_posix()
 
 
 def is_reserved(path: Path) -> bool:
-    return path.parent.resolve() == WIKI_DIR.resolve() and path.name in RESERVED_NAMES
+    return path.parent.absolute() == WIKI_DIR.absolute() and path.name in RESERVED_NAMES
 
 
 def iter_markdown_pages(include_reserved: bool = False) -> list[Path]:
-    pages = sorted(WIKI_DIR.rglob("*.md"))
+    pages: list[Path] = []
+    for current, directories, files in os.walk(WIKI_DIR, topdown=True, followlinks=False):
+        current_path = Path(current)
+        directories[:] = sorted(
+            name for name in directories if not (current_path / name).is_symlink()
+        )
+        pages.extend(
+            current_path / name for name in sorted(files) if Path(name).suffix == ".md"
+        )
+    pages.sort()
     if include_reserved:
         return pages
     return [path for path in pages if not is_reserved(path)]
@@ -153,7 +176,15 @@ def parse_simple_yaml(yaml_text: str) -> dict[str, Any]:
     return data
 
 
-def parse_frontmatter(path: Path) -> tuple[dict[str, Any], str, str | None]:
+def parse_frontmatter(path: Path, contract_root: Path = ROOT) -> tuple[dict[str, Any], str, str | None]:
+    wiki_dir = next((candidate for candidate in path.absolute().parents if candidate.name == "wiki"), None)
+    wiki_root = wiki_dir.parent if wiki_dir is not None else path.absolute().parent
+    try:
+        unsafe = symlink_component(path, wiki_root)
+    except ContractError as exc:
+        return {}, "", str(exc)
+    if unsafe is not None:
+        return {}, "", f"Markdown page path must not traverse a symlink: {unsafe}"
     text = read_text(path)
     lines = text.splitlines()
     if not lines or lines[0].strip() != "---":
@@ -167,7 +198,38 @@ def parse_frontmatter(path: Path) -> tuple[dict[str, Any], str, str | None]:
         return {}, text, "unterminated YAML frontmatter"
     yaml_text = "\n".join(lines[1:end_index])
     body = "\n".join(lines[end_index + 1 :])
-    return parse_simple_yaml(yaml_text), body, None
+    if len(yaml_text.encode("utf-8")) > MAX_YAML_BYTES:
+        return {}, body, f"frontmatter exceeds the {MAX_YAML_BYTES}-byte limit"
+    try:
+        yaml, _jsonschema = require_contract_dependencies()
+    except RunError as exc:
+        return {}, body, str(exc)
+    try:
+        loaded = yaml.safe_load(yaml_text)
+        if not isinstance(loaded, dict):
+            return {}, body, "frontmatter must be a YAML mapping"
+        frontmatter = normalize_yaml_scalars(loaded)
+        # Reserved OKF files have their own compact metadata shape and are not
+        # ordinary content pages governed by the page-frontmatter contract.
+        if frontmatter.get("profile") == "llm-wiki-profile/0.2" and not is_reserved(path):
+            validate_contract(frontmatter, "page-frontmatter", contract_root)
+        return frontmatter, body, None
+    except (ContractError, yaml.YAMLError) as exc:
+        return {}, body, f"unsafe or invalid YAML frontmatter: {exc}"
+
+
+def normalize_yaml_scalars(value: Any) -> Any:
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    if isinstance(value, date):
+        return value.isoformat()
+    if isinstance(value, list):
+        return [normalize_yaml_scalars(item) for item in value]
+    if isinstance(value, dict):
+        return {str(key): normalize_yaml_scalars(item) for key, item in value.items()}
+    return value
 
 
 def first_sentence(body: str) -> str:
@@ -253,7 +315,7 @@ def load_pages() -> list[dict[str, Any]]:
 
 
 def build_graph_data() -> dict[str, Any]:
-    pages = iter_markdown_pages(include_reserved=True)
+    pages = [path for path in iter_markdown_pages(include_reserved=True) if not path.is_symlink()]
     nodes = sorted(wiki_relative(path) for path in pages)
     edges: list[dict[str, str]] = []
     outbound: dict[str, set[str]] = defaultdict(set)
@@ -278,7 +340,11 @@ def build_graph_data() -> dict[str, Any]:
     orphans = sorted(node for node in ordinary_nodes if not inbound[node])
     orphans_excluding_reserved = sorted(node for node in ordinary_nodes if not inbound_non_reserved[node])
 
-    return {
+    graph = {
+        "schema_version": "rb-wiki-graph-cache/0.2",
+        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "source_manifest_digest": graph_source_manifest_digest(),
+        "cache_status": "current",
         "nodes": nodes,
         "edges": sorted(edges, key=lambda item: (item["source"], item["target"])),
         "outbound": {node: sorted(outbound[node]) for node in nodes},
@@ -296,6 +362,30 @@ def build_graph_data() -> dict[str, Any]:
         "orphans_excluding_reserved": orphans_excluding_reserved,
         "components": connected_components(nodes, outbound),
     }
+    validate_contract(graph, "graph-cache", ROOT)
+    return graph
+
+
+def graph_source_manifest_digest() -> str:
+    paths = iter_markdown_pages(include_reserved=True)
+    unsafe_inputs: list[str] = []
+    for relative in ("schema/page_schema.yml", "schema/link_policy.md"):
+        path = ROOT / relative
+        unsafe = symlink_component(path, ROOT)
+        if unsafe is not None:
+            unsafe_inputs.append(relative)
+        elif path.is_file():
+            paths.append(path)
+    items: list[str] = []
+    for path in sorted(set(paths)):
+        relative = path.relative_to(ROOT).as_posix()
+        unsafe = symlink_component(path, ROOT)
+        if unsafe is not None:
+            unsafe_inputs.append(relative)
+            continue
+        items.append(f"{relative}\0{hashlib.sha256(path.read_bytes()).hexdigest()}")
+    items.extend(f"{relative}\0unsafe-symlink" for relative in sorted(set(unsafe_inputs)))
+    return hashlib.sha256("\n".join(items).encode("utf-8")).hexdigest()
 
 
 def connected_components(nodes: list[str], outbound: dict[str, set[str]]) -> list[list[str]]:
@@ -326,15 +416,27 @@ def connected_components(nodes: list[str], outbound: dict[str, set[str]]) -> lis
 
 
 def write_json(path: Path, data: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    atomic_write_text(path, json.dumps(data, indent=2, sort_keys=True) + "\n", ROOT)
 
 
 def load_graph() -> dict[str, Any]:
+    current = load_current_graph_cache()
+    if current is not None:
+        return current
+    graph = build_graph_data()
+    graph["cache_status"] = "rebuilt-in-memory"
+    return graph
+
+
+def load_current_graph_cache() -> dict[str, Any] | None:
     graph_path = CACHE_DIR / "graph.json"
-    if not graph_path.exists():
-        return build_graph_data()
-    return json.loads(read_text(graph_path))
+    try:
+        graph = load_json_contract(graph_path, "graph-cache", ROOT)
+        if graph["source_manifest_digest"] != graph_source_manifest_digest():
+            raise ContractError("graph cache source manifest is stale")
+        return graph
+    except (ContractError, OSError):
+        return None
 
 
 def print_lines(lines: Iterable[str]) -> None:

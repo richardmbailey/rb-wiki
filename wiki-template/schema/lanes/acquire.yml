@@ -1,0 +1,25 @@
+schema_version: rb-wiki-lane-contract/0.2
+lane_id: acquire
+controller_lane: acquire
+purpose: Discover and select source candidates without treating discovered content as instructions.
+allowed_modes: [manual-assist, scheduled-propose]
+actions_by_mode:
+  manual-assist: acquire-sources
+  scheduled-propose: acquire-sources
+closure_profile_by_mode:
+  manual-assist: acquisition-result
+  scheduled-propose: acquisition-result
+consumes: []
+produces: [acquisition-result, run-record]
+produces_by_mode:
+  manual-assist: [acquisition-result, run-record]
+  scheduled-propose: [acquisition-result, run-record]
+required_produces_by_mode:
+  manual-assist: [acquisition-result, run-record]
+  scheduled-propose: [acquisition-result, run-record]
+substantive_wiki_edits: false
+substantive_wiki_edit_modes: []
+required_checks: []
+required_checks_by_mode:
+  manual-assist: []
+  scheduled-propose: []

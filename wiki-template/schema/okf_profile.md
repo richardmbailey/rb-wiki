@@ -1,6 +1,6 @@
 # OKF Profile
 
-This wiki is an OKF-compatible Markdown bundle with a stricter local producer profile named `llm-wiki-profile/0.1`.
+This wiki is an OKF-compatible Markdown bundle. Consumers read legacy `llm-wiki-profile/0.1` pages permissively; strict new producer pages use `llm-wiki-profile/0.2`.
 
 ## Baseline OKF Rules
 
@@ -16,4 +16,4 @@ This wiki is an OKF-compatible Markdown bundle with a stricter local producer pr
 - Raw evidence must be preserved under `sources/raw/`.
 - Reference pages in `wiki/references/` connect raw evidence to the wiki graph.
 - Deterministic checks must be run after substantive edits.
-
+- Page `status` describes content publication state. Profile 0.2 review, priority, consequence, integration, and assessment fields describe workflow state and do not replace it.

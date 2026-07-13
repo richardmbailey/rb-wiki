@@ -3661,3 +3661,21 @@ human = court of appeal
 That is the system.
 
 The rest is implementation detail, but implementation detail sharp enough to remove fingers.
+
+---
+
+# 39. v0.2 Human-Agent Operations Addendum
+
+The standalone v0.2 template turns operational prose into versioned, validated contracts. The committed manifest, agent policy, consequence policy, optional domain adapter, lane contracts, and named time-bounded authority grant form the executable scope. Source and wiki content are untrusted data and cannot change that scope.
+
+The wiki supports two user-facing operating models. In the human-driven model, a person chooses each task, reviews every change, and owns the commit; a person may edit Markdown directly, while a mutating interactive agent uses the `manual-assist` controller mode. In the agent-driven model, committed grants allow scheduled acquisition, ingest, maintenance, or proposal work through `scheduled-propose`, and narrowly authorised exact proposal content may be applied through `authorised-autonomous-apply`. Both models use the same evidence and validation rules. No controller mode authorises a push or deletion of raw evidence.
+
+New wikis should begin human-driven and contain no active grant by default. Automation should be introduced one narrow lane at a time after a supervised run. Every agent or managed mutating command requires a committed, enabled, time-bounded authority grant; direct human Markdown editing does not. The template's `README.md`, `docs/AGENT_OPERATIONS.md`, and `docs/AUTHORITY_GRANTS.md` are the canonical user instructions for selecting a model and operating it safely.
+
+Mutating cooperating agents use the single-writer `wiki_run.py` protocol. Attempts are journalled under `.wiki_state/`; material mutation, recovery, approval, and governance records are durable. Ingest is digest-keyed, resumable, append-only for existing raw evidence, and provenance-validated before inbox archival.
+
+Profile 0.1 pages remain readable. New producer Reference pages use strict profile 0.2 lifecycle fields. Typed lint distinguishes `pass`, `warn`, `fail`, and `not_run`; unavailable semantic assessment is agent work, never a deterministic pass. Lexical search is implemented, while unavailable BM25/vector/hybrid backends say so explicitly.
+
+Acquire, ingest, synthesize, deterministic-maintain, and semantic-maintain exchange validated artifacts rather than relying on schedule order. Scheduled synthesis creates proposals without changing ordinary pages. Autonomous semantic apply requires a base-committed exact target-content proposal. Consequence tiers are `routine`, `material`, and `high-consequence`, based on intended use and action class rather than a domain label. High-consequence apply always requires a later run with a separate committed, unexpired approval bound to the exact proposal digest.
+
+Domain policy may tighten source admissibility, hierarchy, assessment, ontology, reviewer, or tier rules, but cannot weaken raw immutability, provenance, authority, Git closure, or approval binding. Cross-host/multiple-writer mutation, direct migration apply, automatic semantic judgement, unavailable retrieval backends, and adversarial protection from processes that bypass the controller remain outside v0.2.

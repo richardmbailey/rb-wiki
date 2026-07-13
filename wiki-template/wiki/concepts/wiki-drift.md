@@ -8,10 +8,13 @@ timestamp: 2026-07-09T00:00:00Z
 
 created: 2026-07-09
 status: needs-review
-profile: llm-wiki-profile/0.1
+profile: llm-wiki-profile/0.2
 sources:
-  - "/references/2026-07-09-llm-wiki-system-instructions.md"
+  - "/references/2026-07-13-llm-wiki-system-instructions.md"
 confidence: medium
+review_state: pending
+review_priority: normal
+consequence_tier: ordinary
 ---
 
 Wiki drift is the failure mode where synthesis pages become stale relative to newer sources or related pages.
@@ -33,7 +36,7 @@ Drift happens when new evidence changes the state of knowledge but high-level pa
 
 # Citations
 
-- [LLM-Wiki System Instructions](/references/2026-07-09-llm-wiki-system-instructions.md)
+- [LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md)
 
 # Change History
 

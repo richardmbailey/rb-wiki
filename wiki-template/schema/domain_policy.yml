@@ -1,0 +1,13 @@
+schema_version: rb-wiki-domain-policy/0.2
+policy_id: generic-disabled-example
+enabled: false
+core_invariants:
+  raw_immutable: true
+  provenance_required: true
+  authority_required: true
+allowed_source_types: [pdf, transcript, web, note, email, dataset, code, audio, video, image, other]
+source_hierarchy: []
+action_minimum_tiers: {}
+assessment_requirements: []
+reviewer_roles: []
+ontology: {}

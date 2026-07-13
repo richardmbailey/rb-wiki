@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
+*.egg-info/
 .DS_Store
+.wiki_state/
 inbox/processed/
 .wiki_cache/*.sqlite
 .wiki_cache/embeddings/*

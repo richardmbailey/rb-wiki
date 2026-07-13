@@ -14,6 +14,7 @@ from wiki_lib import (
     LOCAL_PROFILE,
     REQUIRED_FIELDS,
     TIMESTAMP_RE,
+    SUPPORTED_PROFILES,
     WIKI_DIR,
     iter_markdown_pages,
     parse_frontmatter,
@@ -45,7 +46,7 @@ def validate_page(path: Path) -> list[str]:
         errors.append(f"{label}: invalid confidence `{confidence}`")
 
     profile = frontmatter.get("profile")
-    if profile and profile != LOCAL_PROFILE:
+    if profile and profile not in SUPPORTED_PROFILES:
         errors.append(f"{label}: invalid profile `{profile}`")
 
     timestamp = frontmatter.get("timestamp")
@@ -89,4 +90,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

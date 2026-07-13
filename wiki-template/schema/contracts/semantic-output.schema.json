@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-semantic-output/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "proposal_id", "agent", "policy_snapshot", "source_ids", "agent_findings", "deterministic_evidence", "uncertainties", "contradictions", "checks_performed", "proposed_changes", "applied_changes", "approval_required", "created_at"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-semantic-output/0.2"},
+    "run_id": {"type": "string"},
+    "proposal_id": {"type": "string"},
+    "agent": {"type": "object", "additionalProperties": false, "required": ["agent_label", "runtime_label"], "properties": {"agent_label": {"type": "string", "minLength": 1}, "runtime_label": {"type": "string", "minLength": 1}}},
+    "policy_snapshot": {"type": "object"},
+    "source_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "agent_findings": {"type": "array", "items": {"type": "string"}},
+    "deterministic_evidence": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
+    "contradictions": {"type": "array", "items": {"type": "string"}},
+    "checks_performed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "proposed_changes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "applied_changes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "approval_required": {"type": "boolean"},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

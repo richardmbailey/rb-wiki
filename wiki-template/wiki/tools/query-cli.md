@@ -8,10 +8,13 @@ timestamp: 2026-07-09T00:00:00Z
 
 created: 2026-07-09
 status: active
-profile: llm-wiki-profile/0.1
+profile: llm-wiki-profile/0.2
 sources:
-  - "/references/2026-07-09-llm-wiki-system-instructions.md"
+  - "/references/2026-07-13-llm-wiki-system-instructions.md"
 confidence: medium
+review_state: reviewed
+review_priority: normal
+consequence_tier: ordinary
 ---
 
 The query CLI provides local routing commands for frontmatter lookup, keyword search, and graph inspection.
@@ -58,7 +61,7 @@ python3 tools/query.py graph path /concepts/llm-wiki.md /concepts/retrieval-augm
 
 # Citations
 
-- [LLM-Wiki System Instructions](/references/2026-07-09-llm-wiki-system-instructions.md)
+- [LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md)
 
 # Change History
 

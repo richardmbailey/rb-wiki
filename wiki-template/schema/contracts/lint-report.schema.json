@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-lint-report/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "report_id", "created_at", "mode", "overall", "results", "queues", "capabilities"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-lint-report/0.2"},
+    "report_id": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "mode": {"enum": ["quick", "full"]},
+    "overall": {"enum": ["green", "yellow", "red"]},
+    "results": {"type": "array", "items": {"$ref": "#/$defs/check"}},
+    "queues": {
+      "type": "object", "additionalProperties": false,
+      "required": ["blockers", "overdue", "agent_required"],
+      "properties": {
+        "blockers": {"type": "array", "items": {"type": "string"}},
+        "overdue": {"type": "array", "items": {"type": "string"}},
+        "agent_required": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "capabilities": {"type": "object"}
+  },
+  "$defs": {
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["check_id", "title", "outcome", "severity", "disposition", "affected_paths", "source_ids", "evidence", "recommended_action"],
+      "properties": {
+        "check_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+        "title": {"type": "string", "minLength": 1},
+        "outcome": {"enum": ["pass", "warn", "fail", "not_run"]},
+        "severity": {"enum": ["info", "low", "medium", "high", "critical"]},
+        "disposition": {"enum": ["none", "monitor", "fix", "agent-required", "human-required"]},
+        "affected_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "source_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "recommended_action": {"type": "string"}
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+schema_version: rb-wiki-authority-grant/0.2
+authority_id: disabled-example
+enabled: false
+owner: example-operator
+issued_at: "2026-01-01T00:00:00Z"
+expires_at: "2026-01-02T00:00:00Z"
+revoked_at: null
+modes:
+  - scheduled-propose
+lanes:
+  - maintain
+actions:
+  - deterministic-maintenance
+input_roots: []
+writable_paths:
+  - wiki/index.md
+  - .wiki_cache/graph.json
+  - reports/lint/**
+  - reports/runs/**
+  - reports/latest.json
+page_types: []
+required_checks:
+  - quick-lint
+consequence_tier: routine
+budgets:
+  max_runtime_seconds: 300
+  max_changed_paths: 25
+  max_acquired_sources: 0
+commit_policy: forbidden
+commit_identity: null
+governance_maintenance: false

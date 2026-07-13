@@ -1,0 +1,20 @@
+schema_version: rb-wiki-lane-contract/0.2
+lane_id: governance-maintain
+controller_lane: governance
+purpose: Apply explicitly authorised changes to wiki governance files and preserve an audit record.
+allowed_modes: [manual-assist]
+actions_by_mode:
+  manual-assist: governance-maintenance
+closure_profile_by_mode:
+  manual-assist: generic
+consumes: []
+produces: [governance-files, run-record]
+produces_by_mode:
+  manual-assist: [governance-files, run-record]
+required_produces_by_mode:
+  manual-assist: [run-record]
+substantive_wiki_edits: false
+substantive_wiki_edit_modes: []
+required_checks: [quick-lint]
+required_checks_by_mode:
+  manual-assist: [quick-lint]

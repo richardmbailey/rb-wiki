@@ -1,0 +1,27 @@
+schema_version: rb-wiki-manifest/0.2
+wiki_id: rb-wiki-template
+template_version: 0.2.0
+profile_version: llm-wiki-profile/0.2
+tools_version: 0.2.0
+policy_version: rb-wiki-policy/0.2
+agent_policy_id: conservative-default
+consequence_policy_version: rb-wiki-consequence-policy/0.2
+consequence_policy_id: domain-neutral-default
+lane_contract_version: rb-wiki-lane-contract/0.2
+report_version: rb-wiki-run-record/0.2
+migration_version: rb-wiki-migrations/0.2
+local_overrides: []
+enabled_capabilities:
+  - lexical-search
+  - deterministic-maintenance
+  - scheduled-propose
+  - external-agent-sessions
+  - scoped-auto-commit
+  - recoverable-ingest
+  - typed-lint
+  - artifact-lane-handoffs
+  - bounded-semantic-apply
+  - high-consequence-approval
+  - domain-policy-adapter
+  - read-only-doctor
+  - migration-dry-run

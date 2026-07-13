@@ -1,0 +1,29 @@
+schema_version: rb-wiki-agent-policy/0.2
+policy_id: conservative-default
+permitted_modes:
+  - manual-assist
+  - scheduled-propose
+  - authorised-autonomous-apply
+limits:
+  max_runtime_seconds: 300
+  max_changed_files: 25
+  max_acquired_sources: 10
+heartbeat_seconds: 60
+lease_seconds: 300
+permitted_commit_policies:
+  - forbidden
+  - manual
+  - scoped-auto
+ingest_limits:
+  max_files: 20
+  max_file_bytes: 104857600
+lifecycle:
+  reference_integration_grace_days: 7
+  high_priority_escalates_immediately: true
+  high_consequence_escalates_immediately: true
+runtime_retention_days: 30
+require_clean_base_for:
+  - scheduled-propose
+  - authorised-autonomous-apply
+unsupported_topologies:
+  - multiple-worktrees

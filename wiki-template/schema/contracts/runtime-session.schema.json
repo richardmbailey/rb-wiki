@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "rb-wiki-session/0.2",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "record", "run_token", "authority", "policy", "lane_contract", "initial_entries", "initial_fingerprints", "initial_raw_fingerprints", "semantic_context", "proposal_id", "approval_id"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-session/0.2"}, "record": {"type": "object"},
+    "run_token": {"type": "string", "minLength": 32, "maxLength": 256},
+    "authority": {"type": "object"}, "policy": {"type": "object"}, "lane_contract": {"type": "object"},
+    "initial_entries": {"type": "array", "items": {"type": "object"}},
+    "initial_fingerprints": {"type": "object", "additionalProperties": {"type": "string"}},
+    "initial_raw_fingerprints": {"type": "object", "additionalProperties": {"type": "string"}},
+    "semantic_context": {"type": "object"},
+    "proposal_id": {"type": ["string", "null"]}, "approval_id": {"type": ["string", "null"]}
+  }
+}

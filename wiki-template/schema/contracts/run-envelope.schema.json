@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "rb-wiki-run-envelope/0.2",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "run_id", "run_token", "lane", "mode", "permitted_actions", "input_roots", "writable_paths", "page_types", "required_checks", "lane_contract", "consequence_tier", "expires_at", "lease_expires_at", "stop_conditions", "commit_policy", "proposal_id", "approval_id", "capabilities", "capability_digest", "agent_provenance", "artifact_handoffs"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-run-envelope/0.2"}, "run_id": {"type": "string"}, "run_token": {"type": "string"},
+    "lane": {"type": "string"}, "mode": {"type": "string"},
+    "permitted_actions": {"type": "array"}, "input_roots": {"type": "array"}, "writable_paths": {"type": "array"}, "page_types": {"type": "array"}, "required_checks": {"type": "array"},
+    "lane_contract": {"type": "object"}, "consequence_tier": {"type": "string"}, "expires_at": {"type": "string", "format": "date-time"}, "lease_expires_at": {"type": "string", "format": "date-time"},
+    "stop_conditions": {"type": "object"}, "commit_policy": {"type": "string"},
+    "proposal_id": {"type": ["string", "null"]}, "approval_id": {"type": ["string", "null"]},
+    "capabilities": {"type": "object"}, "capability_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "agent_provenance": {"type": ["object", "null"]}, "artifact_handoffs": {"type": "object"}
+  }
+}

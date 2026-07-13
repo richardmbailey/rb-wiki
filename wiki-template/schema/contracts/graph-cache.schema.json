@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "rb-wiki-graph-cache/0.2",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "source_manifest_digest", "cache_status", "nodes", "edges", "outbound", "inbound", "inbound_non_reserved", "degree", "orphans", "orphans_excluding_reserved", "components"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-graph-cache/0.2"}, "generated_at": {"type": "string", "format": "date-time"},
+    "source_manifest_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "cache_status": {"enum": ["current", "rebuilt-in-memory"]},
+    "nodes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "target"],
+        "properties": {
+          "source": {"type": "string"},
+          "target": {"type": "string"}
+        }
+      }
+    },
+    "outbound": {"type": "object"}, "inbound": {"type": "object"}, "inbound_non_reserved": {"type": "object"}, "degree": {"type": "object"},
+    "orphans": {"type": "array"}, "orphans_excluding_reserved": {"type": "array"}, "components": {"type": "array"}
+  }
+}

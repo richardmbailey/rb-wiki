@@ -6,7 +6,8 @@ from __future__ import annotations
 import sys
 from collections import defaultdict
 
-from wiki_lib import WIKI_DIR, load_pages
+from run_lib import atomic_write_text
+from wiki_lib import ROOT, WIKI_DIR, load_pages
 
 TYPE_ORDER = [
     "Overview",
@@ -50,7 +51,7 @@ def main() -> int:
     lines = [
         "---",
         'okf_version: "0.1"',
-        'profile: "llm-wiki-profile/0.1"',
+        'profile: "llm-wiki-profile/0.2"',
         "---",
         "",
         "# Wiki Index",
@@ -78,7 +79,7 @@ def main() -> int:
         lines.append("")
 
     index_path = WIKI_DIR / "index.md"
-    index_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    atomic_write_text(index_path, "\n".join(lines).rstrip() + "\n", ROOT)
     total = sum(len(items) for items in grouped.values())
     print(f"PASS: wrote wiki/index.md with {total} ordinary page entries")
     return 0
@@ -86,4 +87,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

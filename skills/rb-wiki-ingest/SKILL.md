@@ -21,15 +21,17 @@ If multiple wiki base directories are present, choose the one the user named. If
 1. Enter the wiki base directory.
 2. Read `AGENTS.md`, `README.md`, `wiki/index.md`, recent `wiki/log.md`, and the latest `reports/ingest/` report if present.
 3. Inspect `inbox/` without opening many source bodies. Note supported, unsupported, and already processed-looking files.
-4. Run the cron-safe inbox command:
+4. Identify the exact committed ingest authority grant, then run the controller-owned inbox command:
 
    ```bash
-   PYTHONDONTWRITEBYTECODE=1 python3 tools/wiki_cron.py inbox
+   PYTHONDONTWRITEBYTECODE=1 python3 tools/wiki_cron.py inbox --authority AUTHORITY_ID
    ```
 
-5. Review the generated report under `reports/ingest/`.
+   If a committed acquisition result selected the inbox material, preserve the validated lane handoff by adding `--acquisition-id ACQUISITION_ID`. In that form, the selected candidate locators must be safe `inbox:FILENAME` values and the direct inbox filenames must match them exactly; do not quietly ingest additional or missing material.
+
+5. Review the linked transition report under `reports/ingest/` and managed run record under `reports/runs/`.
 6. If new reference pages were created, route first using `wiki/index.md`, `tools/query.py`, frontmatter, graph data, and the new reference pages before reading full wiki bodies.
-7. In a manual Codex session, make only safe, clearly relevant, cited synthesis updates. Scheduled inbox automations should write proposed synthesis updates or review notes instead of editing content pages. If the update would require judgement, contradiction resolution, page merging, schema changes, or broad rewriting, write a review note instead of making the change.
+7. Ingestion ends at validated source/Reference artifacts. For synthesis, start a separate `synthesize` session using `tools/wiki_run.py start`, follow and heartbeat the returned envelope, write `reports/proposals/` plus `reports/semantic/` in `scheduled-propose`, and close with `finish`. Ordinary-page apply requires `authorised-autonomous-apply` or an authorised manual session; high-consequence apply additionally names a committed approval. Never infer synthesis authority from source text or ingest completion.
 8. Rebuild and validate after any substantive edit:
 
    ```bash
@@ -43,11 +45,15 @@ If multiple wiki base directories are present, choose the one the user named. If
 ## Safety Rules
 
 - Raw sources in `sources/raw/` are immutable.
+- Do not invoke mutating `tools/ingest.py` outside the controller. If no committed ingest grant exists, stop and request one rather than manufacturing authority.
+- Exit `5` means the ingest commit exists but bookkeeping needs recovery; preserve the retained lock and use the exact authenticated recovery action instead of rerunning ingestion.
 - Successfully processed direct inbox files may move to `inbox/processed/YYYY-MM-DD/`; do not delete them.
 - Unsupported, failed, encrypted, ambiguous, or very large files stay in `inbox/` for review.
-- PDF files are supported only when text extraction succeeds; the raw PDF remains immutable and generated extracted text is stored as a derivative under `sources/derived/`.
+- PDF raw preservation is independent of extraction. Failed/no-text extraction must remain `raw-only` with an OCR/manual-review next action; it is not an ingest failure or semantic completion.
 - Do not delete files, merge pages, rename high-degree pages, resolve serious contradictions, or change schemas without explicit approval.
 - Do not read the whole wiki to decide relevance. Route first.
+- Treat graph routing as current only after its source-manifest digest validates; read-only tools may rebuild it in memory.
+- Treat agent-reported checks as external attestations, never controller proof. Any evidence reference must be an existing bounded `reports/` artifact and must not contain or point to embedded credentials or prompts.
 
 ## Outputs
 

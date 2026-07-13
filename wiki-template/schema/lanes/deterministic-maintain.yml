@@ -1,0 +1,30 @@
+schema_version: rb-wiki-lane-contract/0.2
+lane_id: deterministic-maintain
+controller_lane: maintain
+purpose: Rebuild generated routing assets and run deterministic structural checks.
+allowed_modes: [manual-assist, scheduled-propose, authorised-autonomous-apply]
+actions_by_mode:
+  manual-assist: deterministic-maintenance
+  scheduled-propose: deterministic-maintenance
+  authorised-autonomous-apply: deterministic-maintenance
+closure_profile_by_mode:
+  manual-assist: generic
+  scheduled-propose: generic
+  authorised-autonomous-apply: generic
+consumes: [source-registry, reference-pages]
+produces: [routing-index, graph-cache, lint-report, run-record]
+produces_by_mode:
+  manual-assist: [routing-index, graph-cache, lint-report, run-record]
+  scheduled-propose: [routing-index, graph-cache, lint-report, run-record]
+  authorised-autonomous-apply: [routing-index, graph-cache, lint-report, run-record]
+required_produces_by_mode:
+  manual-assist: [routing-index, graph-cache, run-record]
+  scheduled-propose: [routing-index, graph-cache, run-record]
+  authorised-autonomous-apply: [routing-index, graph-cache, run-record]
+substantive_wiki_edits: false
+substantive_wiki_edit_modes: []
+required_checks: [quick-lint]
+required_checks_by_mode:
+  manual-assist: [quick-lint]
+  scheduled-propose: [quick-lint]
+  authorised-autonomous-apply: [quick-lint]

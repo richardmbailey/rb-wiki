@@ -4,6 +4,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import ingest  # noqa: E402
 import wiki_cron  # noqa: E402
 from pdf_extract import extract_pdf_text, is_pdf_path  # noqa: E402
+from wiki_test_support import make_git_wiki, run  # noqa: E402
 
 
 def write_minimal_pdf(path: Path, text: str) -> None:
@@ -58,6 +60,50 @@ class PdfIngestTests(unittest.TestCase):
 
         self.assertIn("Reliable PDF Ingest Test", text)
         self.assertEqual(method, "pdftotext -layout")
+
+    def test_extraction_failure_preserves_pdf_and_archives_with_raw_only_access(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = make_git_wiki(Path(temporary))
+            pdf = root / "inbox" / "broken.pdf"
+            pdf.write_bytes(b"%PDF-1.4\nnot a complete pdf\n")
+            completed = run(
+                [sys.executable, "tools/ingest.py", "inbox/broken.pdf"],
+                root,
+                check=False,
+                env_overrides={"RB_WIKI_RUN_CONTROLLER": "1"},
+            )
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            journals = list((root / ".wiki_state" / "sources").glob("*.json"))
+            self.assertEqual(len(journals), 1)
+            journal = json.loads(journals[0].read_text(encoding="utf-8"))
+            self.assertEqual(journal["access_level"], "raw-only")
+            self.assertTrue((root / journal["raw_path"]).is_file())
+            reference = (root / journal["reference_path"]).read_text(encoding="utf-8")
+            self.assertIn("source_access_level: raw-only", reference)
+            self.assertIn("OCR or manual review", reference)
+            self.assertFalse(pdf.exists())
+            self.assertTrue((root / journal["processed_path"]).is_file())
+
+    def test_symlinked_derivative_directory_cannot_redirect_pdf_output(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            parent = Path(temporary)
+            root = make_git_wiki(parent)
+            outside = parent / "outside-derived"
+            outside.mkdir()
+            derived = root / "sources" / "derived"
+            if derived.exists():
+                shutil.rmtree(derived)
+            derived.symlink_to(outside, target_is_directory=True)
+            pdf = root / "inbox" / "redirect.pdf"
+            pdf.write_bytes(b"%PDF-1.4\nnot a complete pdf\n")
+            completed = run(
+                [sys.executable, "tools/ingest.py", "inbox/redirect.pdf"],
+                root,
+                check=False,
+                env_overrides={"RB_WIKI_RUN_CONTROLLER": "1"},
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertEqual(list(outside.iterdir()), [])
 
 
 if __name__ == "__main__":

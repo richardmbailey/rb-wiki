@@ -5,10 +5,17 @@ from __future__ import annotations
 
 import sys
 
-from wiki_lib import CACHE_DIR, build_graph_data, write_json
+from wiki_lib import CACHE_DIR, build_graph_data, load_current_graph_cache, write_json
 
 
 def main() -> int:
+    graph = load_current_graph_cache()
+    if graph is not None:
+        print(
+            "PASS: reused current .wiki_cache/graph.json "
+            f"with {len(graph['nodes'])} nodes and {len(graph['edges'])} edges"
+        )
+        return 0
     graph = build_graph_data()
     path = CACHE_DIR / "graph.json"
     write_json(path, graph)
@@ -25,4 +32,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

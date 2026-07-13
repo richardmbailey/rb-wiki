@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-manifest/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "wiki_id", "template_version", "profile_version", "tools_version", "policy_version", "agent_policy_id", "consequence_policy_version", "consequence_policy_id", "lane_contract_version", "report_version", "migration_version", "local_overrides", "enabled_capabilities"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-manifest/0.2"},
+    "wiki_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+    "template_version": {"type": "string", "pattern": "^0\\.2\\.[0-9]+$"},
+    "profile_version": {"const": "llm-wiki-profile/0.2"},
+    "tools_version": {"type": "string", "pattern": "^0\\.2\\.[0-9]+$"},
+    "policy_version": {"const": "rb-wiki-policy/0.2"},
+    "agent_policy_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+    "consequence_policy_version": {"const": "rb-wiki-consequence-policy/0.2"},
+    "consequence_policy_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+    "lane_contract_version": {"const": "rb-wiki-lane-contract/0.2"},
+    "report_version": {"const": "rb-wiki-run-record/0.2"},
+    "migration_version": {"const": "rb-wiki-migrations/0.2"},
+    "local_overrides": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[A-Za-z0-9._/-]+$"}},
+    "enabled_capabilities": {"type": "array", "uniqueItems": true, "items": {"enum": ["lexical-search", "deterministic-maintenance", "scheduled-propose", "external-agent-sessions", "scoped-auto-commit", "recoverable-ingest", "typed-lint", "lifecycle-metadata", "artifact-lane-handoffs", "bounded-semantic-apply", "high-consequence-approval", "domain-policy-adapter", "read-only-doctor", "migration-dry-run"]}}
+  }
+}

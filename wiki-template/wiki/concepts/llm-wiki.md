@@ -1,24 +1,27 @@
 ---
 type: Concept
 title: "LLM-Wiki"
-description: "An LLM-wiki is a persistent Markdown knowledge base where agents compile raw sources into cited, interlinked synthesis."
+description: "An LLM-wiki is a persistent Markdown knowledge base where people and carefully limited agents compile raw sources into cited, interlinked knowledge."
 resource: ""
 tags: [wiki-template, llm-wiki, knowledge-systems, active]
-timestamp: 2026-07-09T00:00:00Z
+timestamp: 2026-07-13T00:00:00Z
 
 created: 2026-07-09
 status: active
-profile: llm-wiki-profile/0.1
+profile: llm-wiki-profile/0.2
 sources:
-  - "/references/2026-07-09-llm-wiki-system-instructions.md"
+  - "/references/2026-07-13-llm-wiki-system-instructions.md"
 confidence: high
+review_state: reviewed
+review_priority: normal
+consequence_tier: ordinary
 ---
 
-An LLM-wiki is a persistent Markdown knowledge base where agents compile raw sources into cited, interlinked synthesis.
+An LLM-wiki is a persistent Markdown knowledge base where people and carefully limited agents compile raw sources into cited, interlinked knowledge.
 
 # Definition
 
-An LLM-wiki separates immutable evidence from editable synthesis. Raw files live under `sources/raw/`, while wiki pages turn those sources into curated pages with frontmatter, citations, and standard Markdown links.
+An LLM-wiki separates preserved evidence from editable synthesis. Raw files live under `sources/raw/`, while wiki pages turn those sources into curated pages with page information, citations, and standard Markdown links. It can be operated directly by a person or through pre-approved agent tasks.
 
 # Key Claims
 
@@ -26,10 +29,13 @@ An LLM-wiki separates immutable evidence from editable synthesis. Raw files live
 - [Compiled Knowledge](/concepts/compiled-knowledge.md) is the central output of the wiki layer.
 - [Source Immutability](/concepts/source-immutability.md) protects the evidence layer from accidental rewriting.
 - [Progressive Disclosure](/concepts/progressive-disclosure.md) keeps agents from reading the whole wiki before routing.
+- Human-driven and Agent-driven operation use the same evidence and checking rules.
+- Agent permissions are written and committed before a task begins; wiki content cannot expand those permissions.
 
 # Evidence
 
 - `2026-07-09`: The seed design source defines the repository structure, local profile, hard invariants, ingest workflow, query workflow, and lint workflow.
+- `2026-07-13`: The current source adds executable permissions, one-task-at-a-time changes, recovery records, proposals, and consequence-based approvals.
 
 # Relationships
 
@@ -40,12 +46,13 @@ An LLM-wiki separates immutable evidence from editable synthesis. Raw files live
 # Open Questions
 
 - Which subject subdomains should receive first-class pages after source ingest?
-- What level of automation is appropriate for this wiki's upkeep cadence?
+- Which narrow maintenance task, if any, has been tested enough to automate?
 
 # Citations
 
-- [LLM-Wiki System Instructions](/references/2026-07-09-llm-wiki-system-instructions.md)
+- [LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md)
 
 # Change History
 
 - `2026-07-09`: Created from the seed design source.
+- `2026-07-13`: Added the v0.2 human-agent operating boundary.

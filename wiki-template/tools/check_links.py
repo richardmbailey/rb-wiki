@@ -7,13 +7,13 @@ import sys
 
 from wiki_lib import (
     OBSIDIAN_RE,
+    WIKI_DIR,
     extract_markdown_links,
     iter_markdown_pages,
     read_text,
     resolve_wiki_link,
     root_relative,
     split_link_target,
-    wiki_relative,
 )
 
 
@@ -23,8 +23,11 @@ def main() -> int:
     checked_links = 0
 
     for path in iter_markdown_pages(include_reserved=True):
+        label = "/" + path.relative_to(WIKI_DIR).as_posix()
+        if path.is_symlink() or not path.resolve().is_relative_to(WIKI_DIR.resolve()):
+            errors.append(f"{label}: unsafe page path resolves outside wiki/")
+            continue
         text = read_text(path)
-        label = wiki_relative(path)
         if OBSIDIAN_RE.search(text):
             warnings.append(f"{label}: contains Obsidian-style wikilinks")
         for raw_target in extract_markdown_links(text):
@@ -35,6 +38,9 @@ def main() -> int:
             if resolved is None:
                 continue
             checked_links += 1
+            if not resolved.is_relative_to(WIKI_DIR.resolve()):
+                errors.append(f"{label}: unsafe link escapes wiki/: `{target}`")
+                continue
             if not resolved.exists():
                 errors.append(f"{label}: broken link `{target}` -> {root_relative(resolved)}")
 
@@ -56,4 +62,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

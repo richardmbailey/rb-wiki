@@ -1,0 +1,30 @@
+schema_version: rb-wiki-lane-contract/0.2
+lane_id: ingest
+controller_lane: ingest
+purpose: Preserve selected inputs and produce validated registry, Reference, and transition artifacts.
+allowed_modes: [manual-assist, scheduled-propose, authorised-autonomous-apply]
+actions_by_mode:
+  manual-assist: ingest-sources
+  scheduled-propose: ingest-sources
+  authorised-autonomous-apply: ingest-sources
+closure_profile_by_mode:
+  manual-assist: generic
+  scheduled-propose: generic
+  authorised-autonomous-apply: generic
+consumes: [inbox-files, acquisition-result]
+produces: [raw-sources, derived-sources, source-transition, source-registry, reference-pages, routing-index, graph-cache, ingest-report, run-record]
+produces_by_mode:
+  manual-assist: [raw-sources, derived-sources, source-transition, source-registry, reference-pages, routing-index, graph-cache, ingest-report, run-record]
+  scheduled-propose: [raw-sources, derived-sources, source-transition, source-registry, reference-pages, routing-index, graph-cache, ingest-report, run-record]
+  authorised-autonomous-apply: [raw-sources, derived-sources, source-transition, source-registry, reference-pages, routing-index, graph-cache, ingest-report, run-record]
+required_produces_by_mode:
+  manual-assist: [raw-sources, derived-sources, source-registry, reference-pages, routing-index, graph-cache, ingest-report, run-record]
+  scheduled-propose: [raw-sources, derived-sources, source-registry, reference-pages, routing-index, graph-cache, ingest-report, run-record]
+  authorised-autonomous-apply: [raw-sources, derived-sources, source-registry, reference-pages, routing-index, graph-cache, ingest-report, run-record]
+substantive_wiki_edits: false
+substantive_wiki_edit_modes: []
+required_checks: [quick-lint, provenance]
+required_checks_by_mode:
+  manual-assist: [quick-lint, provenance]
+  scheduled-propose: [quick-lint, provenance]
+  authorised-autonomous-apply: [quick-lint, provenance]

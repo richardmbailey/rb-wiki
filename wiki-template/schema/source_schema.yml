@@ -7,6 +7,10 @@ required_fields:
   - date_ingested
   - date_published
   - status
+  - ingest_state
+  - access_level
+  - processed_path
+  - derivative_path
 allowed_source_types:
   - pdf
   - transcript
@@ -24,4 +28,16 @@ allowed_statuses:
   - superseded
   - rejected
   - needs-review
-
+allowed_ingest_states:
+  - captured
+  - raw-preserved
+  - registered
+  - reference-created
+  - validated
+  - inbox-archived
+  - recovery-required
+allowed_access_levels:
+  - full-text
+  - raw-only
+  - metadata-only
+  - preservation-only

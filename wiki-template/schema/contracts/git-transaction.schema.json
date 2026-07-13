@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-git-transaction/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "stage", "base_commit", "branch_ref", "expected_paths", "content_manifest", "commit_hash", "tree_hash", "branch_head", "created_at", "updated_at", "error"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-git-transaction/0.2"},
+    "run_id": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{12}$"},
+    "stage": {"enum": ["prepared", "commit-created", "branch-moved", "index-refreshed", "receipt-written", "reconciled"]},
+    "base_commit": {"type": "string", "pattern": "^[a-f0-9]{40,64}$"},
+    "branch_ref": {"type": "string", "pattern": "^refs/heads/[A-Za-z0-9._/-]+$"},
+    "expected_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "content_manifest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "commit_hash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40,64}$"},
+    "tree_hash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40,64}$"},
+    "branch_head": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40,64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "error": {"type": ["string", "null"], "maxLength": 8000}
+  }
+}

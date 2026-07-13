@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-commit-receipt/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "base_commit", "branch_ref", "commit_hash", "tree_hash", "changed_paths", "content_manifest", "verified_at"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-commit-receipt/0.2"},
+    "run_id": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{12}$"},
+    "base_commit": {"type": "string", "pattern": "^[a-f0-9]{40,64}$"},
+    "branch_ref": {"type": "string", "pattern": "^refs/heads/[A-Za-z0-9._/-]+$"},
+    "commit_hash": {"type": "string", "pattern": "^[a-f0-9]{40,64}$"},
+    "tree_hash": {"type": "string", "pattern": "^[a-f0-9]{40,64}$"},
+    "changed_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "content_manifest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "verified_at": {"type": "string", "format": "date-time"}
+  }
+}

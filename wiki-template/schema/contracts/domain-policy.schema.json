@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-domain-policy/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "enabled", "core_invariants", "allowed_source_types", "source_hierarchy", "action_minimum_tiers", "assessment_requirements", "reviewer_roles", "ontology"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-domain-policy/0.2"},
+    "policy_id": {"type": "string"},
+    "enabled": {"type": "boolean"},
+    "core_invariants": {"type": "object", "additionalProperties": false, "required": ["raw_immutable", "provenance_required", "authority_required"], "properties": {"raw_immutable": {"const": true}, "provenance_required": {"const": true}, "authority_required": {"const": true}}},
+    "allowed_source_types": {"type": "array", "uniqueItems": true, "items": {"enum": ["pdf", "transcript", "web", "note", "email", "dataset", "code", "audio", "video", "image", "other"]}},
+    "source_hierarchy": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "action_minimum_tiers": {"type": "object", "additionalProperties": false, "properties": {"new-synthesis": {"enum": ["routine", "material", "high-consequence"]}, "update-synthesis": {"enum": ["routine", "material", "high-consequence"]}, "semantic-maintenance": {"enum": ["routine", "material", "high-consequence"]}, "contradiction-resolution": {"enum": ["routine", "material", "high-consequence"]}}},
+    "assessment_requirements": {"type": "array", "items": {"type": "string"}},
+    "reviewer_roles": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "ontology": {"type": "object"}
+  }
+}

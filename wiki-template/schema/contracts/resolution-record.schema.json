@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-resolution-record/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "resolution_id", "run_id", "authority_id", "actor", "reason", "commit_hash", "commit_classification", "recorded_at", "original_state"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-resolution/0.2"},
+    "resolution_id": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{12}$"},
+    "run_id": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{12}$"},
+    "authority_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+    "actor": {"type": "string", "minLength": 1, "maxLength": 256},
+    "reason": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "commit_hash": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"}
+      ]
+    },
+    "commit_classification": {"enum": ["none", "managed-reconciled", "human-acknowledgement"]},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "original_state": {"enum": ["manual-commit-required", "approval-required", "committed-recovery-required", "failed", "cancelled"]}
+  }
+}

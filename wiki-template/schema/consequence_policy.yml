@@ -1,0 +1,27 @@
+schema_version: rb-wiki-consequence-policy/0.2
+policy_id: domain-neutral-default
+policy_version: rb-wiki-consequence-policy/0.2
+tier_order: [routine, material, high-consequence]
+action_minimum_tiers:
+  new-synthesis: routine
+  update-synthesis: routine
+  semantic-maintenance: routine
+  contradiction-resolution: high-consequence
+tiers:
+  routine:
+    approval_required: false
+    required_checks: [quick-lint, provenance]
+    approver_roles: []
+  material:
+    approval_required: false
+    required_checks: [quick-lint, provenance, semantic-output]
+    approver_roles: []
+  high-consequence:
+    approval_required: true
+    required_checks: [quick-lint, provenance, semantic-output, proposal-payload, approval-binding]
+    approver_roles: [high-consequence-reviewer, maintainer]
+core_invariants:
+  raw_immutable: true
+  provenance_required: true
+  authority_required: true
+  exact_payload_for_high_consequence: true

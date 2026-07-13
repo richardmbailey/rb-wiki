@@ -1,4 +1,5 @@
 {
+  "cache_status": "current",
   "components": [
     [
       "/concepts/bm25-search.md",
@@ -23,6 +24,7 @@
       "/methods/wiki-linting.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md",
       "/tools/query-cli.md",
@@ -36,13 +38,13 @@
       "out": 4
     },
     "/concepts/compiled-knowledge.md": {
-      "in": 8,
-      "in_non_reserved": 7,
+      "in": 9,
+      "in_non_reserved": 8,
       "out": 7
     },
     "/concepts/context-contamination.md": {
-      "in": 4,
-      "in_non_reserved": 3,
+      "in": 5,
+      "in_non_reserved": 4,
       "out": 6
     },
     "/concepts/frontmatter.md": {
@@ -56,8 +58,8 @@
       "out": 6
     },
     "/concepts/llm-wiki.md": {
-      "in": 11,
-      "in_non_reserved": 10,
+      "in": 12,
+      "in_non_reserved": 11,
       "out": 7
     },
     "/concepts/open-knowledge-format.md": {
@@ -66,8 +68,8 @@
       "out": 5
     },
     "/concepts/progressive-disclosure.md": {
-      "in": 11,
-      "in_non_reserved": 10,
+      "in": 12,
+      "in_non_reserved": 11,
       "out": 6
     },
     "/concepts/reciprocal-rank-fusion.md": {
@@ -81,8 +83,8 @@
       "out": 7
     },
     "/concepts/source-immutability.md": {
-      "in": 5,
-      "in_non_reserved": 4,
+      "in": 6,
+      "in_non_reserved": 5,
       "out": 5
     },
     "/concepts/vector-search.md": {
@@ -91,8 +93,8 @@
       "out": 3
     },
     "/concepts/wiki-drift.md": {
-      "in": 4,
-      "in_non_reserved": 3,
+      "in": 5,
+      "in_non_reserved": 4,
       "out": 5
     },
     "/decisions/adopt-local-profile-over-minimal-okf.md": {
@@ -101,58 +103,63 @@
       "out": 3
     },
     "/decisions/use-okf-compatible-markdown-links.md": {
-      "in": 4,
-      "in_non_reserved": 3,
+      "in": 5,
+      "in_non_reserved": 4,
       "out": 3
     },
     "/index.md": {
       "in": 0,
       "in_non_reserved": 0,
-      "out": 24
+      "out": 25
     },
     "/log.md": {
       "in": 0,
       "in_non_reserved": 0,
-      "out": 1
+      "out": 2
     },
     "/methods/graph-routing.md": {
-      "in": 9,
-      "in_non_reserved": 8,
+      "in": 10,
+      "in_non_reserved": 9,
       "out": 3
     },
     "/methods/source-ingestion.md": {
-      "in": 7,
-      "in_non_reserved": 6,
+      "in": 8,
+      "in_non_reserved": 7,
       "out": 4
     },
     "/methods/wiki-linting.md": {
-      "in": 6,
-      "in_non_reserved": 5,
+      "in": 7,
+      "in_non_reserved": 6,
       "out": 3
     },
     "/overview.md": {
-      "in": 2,
-      "in_non_reserved": 1,
-      "out": 9
+      "in": 3,
+      "in_non_reserved": 2,
+      "out": 10
     },
     "/references/2026-07-09-llm-wiki-system-instructions.md": {
-      "in": 25,
-      "in_non_reserved": 23,
+      "in": 3,
+      "in_non_reserved": 1,
+      "out": 16
+    },
+    "/references/2026-07-13-llm-wiki-system-instructions.md": {
+      "in": 26,
+      "in_non_reserved": 24,
       "out": 15
     },
     "/syntheses/llm-wiki-operating-model.md": {
-      "in": 4,
-      "in_non_reserved": 3,
+      "in": 6,
+      "in_non_reserved": 5,
       "out": 8
     },
     "/syntheses/llm-wiki-vs-rag.md": {
-      "in": 4,
-      "in_non_reserved": 3,
+      "in": 5,
+      "in_non_reserved": 4,
       "out": 7
     },
     "/tools/query-cli.md": {
-      "in": 10,
-      "in_non_reserved": 9,
+      "in": 11,
+      "in_non_reserved": 10,
       "out": 4
     },
     "/tools/sqlite-fts5.md": {
@@ -172,7 +179,7 @@
     },
     {
       "source": "/concepts/bm25-search.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/bm25-search.md",
@@ -196,7 +203,7 @@
     },
     {
       "source": "/concepts/compiled-knowledge.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/compiled-knowledge.md",
@@ -228,7 +235,7 @@
     },
     {
       "source": "/concepts/context-contamination.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/frontmatter.md",
@@ -240,7 +247,7 @@
     },
     {
       "source": "/concepts/frontmatter.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/frontmatter.md",
@@ -268,7 +275,7 @@
     },
     {
       "source": "/concepts/hybrid-search.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/llm-wiki.md",
@@ -296,7 +303,7 @@
     },
     {
       "source": "/concepts/llm-wiki.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/open-knowledge-format.md",
@@ -316,7 +323,7 @@
     },
     {
       "source": "/concepts/open-knowledge-format.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/progressive-disclosure.md",
@@ -336,7 +343,7 @@
     },
     {
       "source": "/concepts/progressive-disclosure.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/progressive-disclosure.md",
@@ -356,7 +363,7 @@
     },
     {
       "source": "/concepts/reciprocal-rank-fusion.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/reciprocal-rank-fusion.md",
@@ -384,7 +391,7 @@
     },
     {
       "source": "/concepts/retrieval-augmented-generation.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/retrieval-augmented-generation.md",
@@ -404,7 +411,7 @@
     },
     {
       "source": "/concepts/source-immutability.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/source-immutability.md",
@@ -420,7 +427,7 @@
     },
     {
       "source": "/concepts/vector-search.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/concepts/wiki-drift.md",
@@ -440,7 +447,7 @@
     },
     {
       "source": "/concepts/wiki-drift.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/decisions/adopt-local-profile-over-minimal-okf.md",
@@ -452,7 +459,7 @@
     },
     {
       "source": "/decisions/adopt-local-profile-over-minimal-okf.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/decisions/use-okf-compatible-markdown-links.md",
@@ -464,7 +471,7 @@
     },
     {
       "source": "/decisions/use-okf-compatible-markdown-links.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/index.md",
@@ -545,6 +552,10 @@
     {
       "source": "/index.md",
       "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/index.md",
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/index.md",
@@ -567,12 +578,16 @@
       "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
     },
     {
+      "source": "/log.md",
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
+    },
+    {
       "source": "/methods/graph-routing.md",
       "target": "/concepts/hybrid-search.md"
     },
     {
       "source": "/methods/graph-routing.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/methods/graph-routing.md",
@@ -584,7 +599,7 @@
     },
     {
       "source": "/methods/source-ingestion.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/methods/source-ingestion.md",
@@ -600,7 +615,7 @@
     },
     {
       "source": "/methods/wiki-linting.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/methods/wiki-linting.md",
@@ -640,7 +655,11 @@
     },
     {
       "source": "/overview.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/overview.md",
+      "target": "/syntheses/llm-wiki-operating-model.md"
     },
     {
       "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
@@ -692,6 +711,10 @@
     },
     {
       "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
       "target": "/syntheses/llm-wiki-operating-model.md"
     },
     {
@@ -700,6 +723,66 @@
     },
     {
       "source": "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "target": "/tools/query-cli.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/concepts/compiled-knowledge.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/concepts/context-contamination.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/concepts/llm-wiki.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/concepts/progressive-disclosure.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/concepts/source-immutability.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/concepts/wiki-drift.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/decisions/use-okf-compatible-markdown-links.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/methods/graph-routing.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/methods/source-ingestion.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/methods/wiki-linting.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/overview.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/syntheses/llm-wiki-operating-model.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "target": "/syntheses/llm-wiki-vs-rag.md"
+    },
+    {
+      "source": "/references/2026-07-13-llm-wiki-system-instructions.md",
       "target": "/tools/query-cli.md"
     },
     {
@@ -728,7 +811,7 @@
     },
     {
       "source": "/syntheses/llm-wiki-operating-model.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/syntheses/llm-wiki-operating-model.md",
@@ -760,7 +843,7 @@
     },
     {
       "source": "/syntheses/llm-wiki-vs-rag.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/tools/query-cli.md",
@@ -776,7 +859,7 @@
     },
     {
       "source": "/tools/query-cli.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/tools/sqlite-fts5.md",
@@ -788,13 +871,14 @@
     },
     {
       "source": "/tools/sqlite-fts5.md",
-      "target": "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "target": "/references/2026-07-13-llm-wiki-system-instructions.md"
     },
     {
       "source": "/tools/sqlite-fts5.md",
       "target": "/tools/query-cli.md"
     }
   ],
+  "generated_at": "2026-07-13T20:59:35Z",
   "inbound": {
     "/concepts/bm25-search.md": [
       "/concepts/hybrid-search.md",
@@ -812,13 +896,15 @@
       "/index.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
     "/concepts/context-contamination.md": [
       "/concepts/progressive-disclosure.md",
       "/concepts/wiki-drift.md",
       "/index.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/concepts/frontmatter.md": [
       "/concepts/open-knowledge-format.md",
@@ -848,6 +934,7 @@
       "/index.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
@@ -869,6 +956,7 @@
       "/methods/source-ingestion.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-vs-rag.md",
       "/tools/query-cli.md"
     ],
@@ -887,6 +975,7 @@
       "/index.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md"
     ],
     "/concepts/vector-search.md": [
@@ -900,7 +989,8 @@
       "/concepts/compiled-knowledge.md",
       "/concepts/context-contamination.md",
       "/index.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/decisions/adopt-local-profile-over-minimal-okf.md": [
       "/concepts/open-knowledge-format.md",
@@ -912,7 +1002,8 @@
       "/concepts/open-knowledge-format.md",
       "/index.md",
       "/overview.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/index.md": [],
     "/log.md": [],
@@ -924,6 +1015,7 @@
       "/methods/wiki-linting.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/tools/query-cli.md"
     ],
@@ -933,6 +1025,7 @@
       "/concepts/wiki-drift.md",
       "/index.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
@@ -942,13 +1035,20 @@
       "/index.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md"
     ],
     "/overview.md": [
       "/index.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/references/2026-07-09-llm-wiki-system-instructions.md": [
+      "/index.md",
+      "/log.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
+    ],
+    "/references/2026-07-13-llm-wiki-system-instructions.md": [
       "/concepts/bm25-search.md",
       "/concepts/compiled-knowledge.md",
       "/concepts/context-contamination.md",
@@ -970,6 +1070,7 @@
       "/methods/source-ingestion.md",
       "/methods/wiki-linting.md",
       "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md",
       "/tools/query-cli.md",
@@ -979,13 +1080,16 @@
       "/concepts/compiled-knowledge.md",
       "/concepts/progressive-disclosure.md",
       "/index.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/syntheses/llm-wiki-vs-rag.md": [
       "/concepts/compiled-knowledge.md",
       "/concepts/retrieval-augmented-generation.md",
       "/index.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/tools/query-cli.md": [
       "/concepts/frontmatter.md",
@@ -996,6 +1100,7 @@
       "/methods/source-ingestion.md",
       "/methods/wiki-linting.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/tools/sqlite-fts5.md"
     ],
@@ -1020,12 +1125,14 @@
       "/concepts/wiki-drift.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
     "/concepts/context-contamination.md": [
       "/concepts/progressive-disclosure.md",
       "/concepts/wiki-drift.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/concepts/frontmatter.md": [
       "/concepts/open-knowledge-format.md",
@@ -1052,6 +1159,7 @@
       "/decisions/use-okf-compatible-markdown-links.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
@@ -1071,6 +1179,7 @@
       "/methods/source-ingestion.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-vs-rag.md",
       "/tools/query-cli.md"
     ],
@@ -1086,6 +1195,7 @@
       "/concepts/llm-wiki.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md"
     ],
     "/concepts/vector-search.md": [
@@ -1097,7 +1207,8 @@
     "/concepts/wiki-drift.md": [
       "/concepts/compiled-knowledge.md",
       "/concepts/context-contamination.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/decisions/adopt-local-profile-over-minimal-okf.md": [
       "/concepts/open-knowledge-format.md",
@@ -1107,7 +1218,8 @@
     "/decisions/use-okf-compatible-markdown-links.md": [
       "/concepts/open-knowledge-format.md",
       "/overview.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/index.md": [],
     "/log.md": [],
@@ -1118,6 +1230,7 @@
       "/methods/wiki-linting.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/tools/query-cli.md"
     ],
@@ -1126,6 +1239,7 @@
       "/concepts/source-immutability.md",
       "/concepts/wiki-drift.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
@@ -1134,12 +1248,17 @@
       "/concepts/wiki-drift.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md"
     ],
     "/overview.md": [
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/references/2026-07-09-llm-wiki-system-instructions.md": [
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
+    ],
+    "/references/2026-07-13-llm-wiki-system-instructions.md": [
       "/concepts/bm25-search.md",
       "/concepts/compiled-knowledge.md",
       "/concepts/context-contamination.md",
@@ -1159,6 +1278,7 @@
       "/methods/source-ingestion.md",
       "/methods/wiki-linting.md",
       "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md",
       "/tools/query-cli.md",
@@ -1167,12 +1287,15 @@
     "/syntheses/llm-wiki-operating-model.md": [
       "/concepts/compiled-knowledge.md",
       "/concepts/progressive-disclosure.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/syntheses/llm-wiki-vs-rag.md": [
       "/concepts/compiled-knowledge.md",
       "/concepts/retrieval-augmented-generation.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/tools/query-cli.md": [
       "/concepts/frontmatter.md",
@@ -1182,6 +1305,7 @@
       "/methods/source-ingestion.md",
       "/methods/wiki-linting.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/tools/sqlite-fts5.md"
     ],
@@ -1213,6 +1337,7 @@
     "/methods/wiki-linting.md",
     "/overview.md",
     "/references/2026-07-09-llm-wiki-system-instructions.md",
+    "/references/2026-07-13-llm-wiki-system-instructions.md",
     "/syntheses/llm-wiki-operating-model.md",
     "/syntheses/llm-wiki-vs-rag.md",
     "/tools/query-cli.md",
@@ -1224,7 +1349,7 @@
     "/concepts/bm25-search.md": [
       "/concepts/hybrid-search.md",
       "/concepts/vector-search.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/sqlite-fts5.md"
     ],
     "/concepts/compiled-knowledge.md": [
@@ -1232,7 +1357,7 @@
       "/concepts/retrieval-augmented-generation.md",
       "/concepts/wiki-drift.md",
       "/methods/source-ingestion.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
@@ -1242,12 +1367,12 @@
       "/concepts/progressive-disclosure.md",
       "/concepts/wiki-drift.md",
       "/methods/graph-routing.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/concepts/frontmatter.md": [
       "/concepts/open-knowledge-format.md",
       "/concepts/progressive-disclosure.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md"
     ],
     "/concepts/hybrid-search.md": [
@@ -1256,7 +1381,7 @@
       "/concepts/reciprocal-rank-fusion.md",
       "/concepts/vector-search.md",
       "/methods/graph-routing.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/concepts/llm-wiki.md": [
       "/concepts/compiled-knowledge.md",
@@ -1265,28 +1390,28 @@
       "/concepts/retrieval-augmented-generation.md",
       "/concepts/source-immutability.md",
       "/methods/wiki-linting.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/concepts/open-knowledge-format.md": [
       "/concepts/frontmatter.md",
       "/concepts/llm-wiki.md",
       "/decisions/adopt-local-profile-over-minimal-okf.md",
       "/decisions/use-okf-compatible-markdown-links.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/concepts/progressive-disclosure.md": [
       "/concepts/context-contamination.md",
       "/concepts/frontmatter.md",
       "/concepts/hybrid-search.md",
       "/methods/graph-routing.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md"
     ],
     "/concepts/reciprocal-rank-fusion.md": [
       "/concepts/bm25-search.md",
       "/concepts/hybrid-search.md",
       "/concepts/vector-search.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md"
     ],
     "/concepts/retrieval-augmented-generation.md": [
@@ -1295,37 +1420,37 @@
       "/concepts/hybrid-search.md",
       "/concepts/llm-wiki.md",
       "/concepts/vector-search.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-vs-rag.md"
     ],
     "/concepts/source-immutability.md": [
       "/concepts/compiled-knowledge.md",
       "/concepts/llm-wiki.md",
       "/methods/source-ingestion.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md"
     ],
     "/concepts/vector-search.md": [
       "/concepts/bm25-search.md",
       "/concepts/hybrid-search.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/concepts/wiki-drift.md": [
       "/concepts/compiled-knowledge.md",
       "/concepts/context-contamination.md",
       "/methods/source-ingestion.md",
       "/methods/wiki-linting.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/decisions/adopt-local-profile-over-minimal-okf.md": [
       "/concepts/open-knowledge-format.md",
       "/concepts/progressive-disclosure.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/decisions/use-okf-compatible-markdown-links.md": [
       "/concepts/llm-wiki.md",
       "/concepts/open-knowledge-format.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/index.md": [
       "/concepts/bm25-search.md",
@@ -1348,28 +1473,30 @@
       "/methods/wiki-linting.md",
       "/overview.md",
       "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md",
       "/tools/query-cli.md",
       "/tools/sqlite-fts5.md"
     ],
     "/log.md": [
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/methods/graph-routing.md": [
       "/concepts/hybrid-search.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md"
     ],
     "/methods/source-ingestion.md": [
       "/concepts/progressive-disclosure.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md",
       "/tools/sqlite-fts5.md"
     ],
     "/methods/wiki-linting.md": [
       "/methods/graph-routing.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md"
     ],
     "/overview.md": [
@@ -1381,7 +1508,8 @@
       "/decisions/use-okf-compatible-markdown-links.md",
       "/methods/graph-routing.md",
       "/methods/wiki-linting.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md"
     ],
     "/references/2026-07-09-llm-wiki-system-instructions.md": [
       "/concepts/compiled-knowledge.md",
@@ -1396,6 +1524,24 @@
       "/methods/source-ingestion.md",
       "/methods/wiki-linting.md",
       "/overview.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
+      "/syntheses/llm-wiki-operating-model.md",
+      "/syntheses/llm-wiki-vs-rag.md",
+      "/tools/query-cli.md"
+    ],
+    "/references/2026-07-13-llm-wiki-system-instructions.md": [
+      "/concepts/compiled-knowledge.md",
+      "/concepts/context-contamination.md",
+      "/concepts/llm-wiki.md",
+      "/concepts/progressive-disclosure.md",
+      "/concepts/source-immutability.md",
+      "/concepts/wiki-drift.md",
+      "/decisions/use-okf-compatible-markdown-links.md",
+      "/methods/graph-routing.md",
+      "/methods/source-ingestion.md",
+      "/methods/wiki-linting.md",
+      "/overview.md",
+      "/references/2026-07-09-llm-wiki-system-instructions.md",
       "/syntheses/llm-wiki-operating-model.md",
       "/syntheses/llm-wiki-vs-rag.md",
       "/tools/query-cli.md"
@@ -1407,7 +1553,7 @@
       "/methods/graph-routing.md",
       "/methods/source-ingestion.md",
       "/methods/wiki-linting.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md"
     ],
     "/syntheses/llm-wiki-vs-rag.md": [
@@ -1417,19 +1563,21 @@
       "/concepts/progressive-disclosure.md",
       "/concepts/retrieval-augmented-generation.md",
       "/methods/source-ingestion.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/tools/query-cli.md": [
       "/concepts/hybrid-search.md",
       "/concepts/progressive-disclosure.md",
       "/methods/graph-routing.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md"
+      "/references/2026-07-13-llm-wiki-system-instructions.md"
     ],
     "/tools/sqlite-fts5.md": [
       "/concepts/bm25-search.md",
       "/concepts/hybrid-search.md",
-      "/references/2026-07-09-llm-wiki-system-instructions.md",
+      "/references/2026-07-13-llm-wiki-system-instructions.md",
       "/tools/query-cli.md"
     ]
-  }
+  },
+  "schema_version": "rb-wiki-graph-cache/0.2",
+  "source_manifest_digest": "4ff13ddbccf0cd8cc607245175118d3e3d3c1b50b08ea5e93ebe6905d81d0b48"
 }

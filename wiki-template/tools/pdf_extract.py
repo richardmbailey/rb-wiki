@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from wiki_lib import ROOT, SOURCES_DIR, now_utc
+from run_lib import atomic_write_text, symlink_component
 
 PDF_SUFFIXES = {".pdf"}
 DERIVED_DIR = SOURCES_DIR / "derived"
@@ -67,6 +68,9 @@ def ensure_pdf_text_derivative(entry: dict[str, str], pdf_path: Path) -> PdfExtr
     derived_path = DERIVED_DIR / f"{source_id}.txt"
     derived_rel = derived_path.relative_to(ROOT).as_posix()
 
+    unsafe = symlink_component(derived_path, ROOT)
+    if unsafe is not None:
+        raise RuntimeError(f"refusing symlinked PDF derivative path: {unsafe}")
     if derived_path.is_file():
         existing = derived_path.read_text(encoding="utf-8", errors="replace")
         return PdfExtractionResult(
@@ -92,7 +96,7 @@ def ensure_pdf_text_derivative(entry: dict[str, str], pdf_path: Path) -> PdfExtr
     note = "Extracted text from PDF." if status == "text-extracted" else "No extractable text found; OCR or manual review may be required."
     body = build_derived_text(source_id, raw_path, raw_hash, method, status, extracted_text)
     DERIVED_DIR.mkdir(parents=True, exist_ok=True)
-    derived_path.write_text(body, encoding="utf-8")
+    atomic_write_text(derived_path, body, ROOT)
     return PdfExtractionResult(
         status=status,
         method=method,

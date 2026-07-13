@@ -1,9 +1,26 @@
-- source_id: "2026-07-09-llm-wiki-system-instructions"
-  raw_path: "sources/raw/2026-07-09-llm-wiki-system-instructions.md"
-  reference_path: "wiki/references/2026-07-09-llm-wiki-system-instructions.md"
-  hash_sha256: "45143feba5179fd9dddbeca65a629175224d939eb4b5807269ab86565da50ee7"
-  source_type: "note"
-  date_ingested: "2026-07-09"
-  date_published: "unknown"
-  status: "active"
-
+schema_version: rb-wiki-source-registry/0.2
+sources:
+  - source_id: 2026-07-09-llm-wiki-system-instructions
+    raw_path: sources/raw/2026-07-09-llm-wiki-system-instructions.md
+    reference_path: wiki/references/2026-07-09-llm-wiki-system-instructions.md
+    hash_sha256: 45143feba5179fd9dddbeca65a629175224d939eb4b5807269ab86565da50ee7
+    source_type: note
+    date_ingested: "2026-07-09"
+    date_published: unknown
+    status: superseded
+    ingest_state: validated
+    access_level: full-text
+    processed_path: null
+    derivative_path: null
+  - source_id: 2026-07-13-llm-wiki-system-instructions
+    raw_path: sources/raw/2026-07-13-llm-wiki-system-instructions.md
+    reference_path: wiki/references/2026-07-13-llm-wiki-system-instructions.md
+    hash_sha256: 65105ad863ff965ee7b2b6c694c18c87a56f2ce960ad2c5c4f4571022840209c
+    source_type: note
+    date_ingested: "2026-07-13"
+    date_published: unknown
+    status: active
+    ingest_state: validated
+    access_level: full-text
+    processed_path: null
+    derivative_path: null

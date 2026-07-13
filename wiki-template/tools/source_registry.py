@@ -1,114 +1,146 @@
 #!/usr/bin/env python3
-"""Register and validate immutable raw sources."""
+"""Safely load, write, reconcile, and validate the v0.2 source registry."""
 
 from __future__ import annotations
 
-import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
+from run_lib import (
+    MAX_YAML_BYTES,
+    ContractError,
+    atomic_write_text,
+    require_contract_dependencies,
+    symlink_component,
+    validate_contract,
+)
 from wiki_lib import RAW_DIR, ROOT, SOURCES_DIR, sha256_file, slugify, today_utc
 
 REGISTRY_PATH = SOURCES_DIR / "_source_registry.yml"
+REGISTRY_VERSION = "rb-wiki-source-registry/0.2"
 
 SOURCE_TYPES_BY_SUFFIX = {
-    ".pdf": "pdf",
-    ".md": "note",
-    ".markdown": "note",
-    ".txt": "note",
-    ".text": "note",
-    ".html": "web",
-    ".htm": "web",
-    ".csv": "dataset",
-    ".tsv": "dataset",
-    ".json": "dataset",
-    ".py": "code",
-    ".js": "code",
-    ".ts": "code",
-    ".mp3": "audio",
-    ".m4a": "audio",
-    ".wav": "audio",
-    ".mp4": "video",
-    ".mov": "video",
-    ".png": "image",
-    ".jpg": "image",
+    ".pdf": "pdf", ".md": "note", ".markdown": "note", ".txt": "note", ".text": "note",
+    ".html": "web", ".htm": "web", ".csv": "dataset", ".tsv": "dataset", ".json": "dataset",
+    ".py": "code", ".js": "code", ".ts": "code", ".mp3": "audio", ".m4a": "audio",
+    ".wav": "audio", ".mp4": "video", ".mov": "video", ".png": "image", ".jpg": "image",
     ".jpeg": "image",
 }
 
+SOURCE_FORMAT_CAPABILITIES = {
+    ".md": "ingest",
+    ".markdown": "ingest",
+    ".txt": "ingest",
+    ".text": "ingest",
+    ".pdf": "ingest",
+    ".html": "preservation-only",
+    ".htm": "preservation-only",
+}
 
-def parse_registry() -> list[dict[str, str]]:
-    if not REGISTRY_PATH.exists():
+FIELD_ORDER = [
+    "source_id", "raw_path", "reference_path", "hash_sha256", "source_type", "date_ingested",
+    "date_published", "status", "ingest_state", "access_level", "processed_path", "derivative_path",
+]
+
+
+def _legacy_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    migrated = dict(entry)
+    migrated.setdefault("ingest_state", "validated")
+    migrated.setdefault("access_level", "raw-only" if migrated.get("source_type") == "pdf" else "full-text")
+    migrated.setdefault("processed_path", None)
+    migrated.setdefault("derivative_path", None)
+    return migrated
+
+
+def load_registry_document(path: Path = REGISTRY_PATH, contract_root: Path = ROOT) -> dict[str, Any]:
+    yaml, _jsonschema = require_contract_dependencies()
+    try:
+        data_root = path.absolute().parents[1]
+        unsafe = symlink_component(path, data_root)
+        if unsafe is not None:
+            raise ContractError(f"source registry path must not traverse a symlink: {unsafe}")
+        if path.stat().st_size > MAX_YAML_BYTES:
+            raise ContractError(f"source registry exceeds the {MAX_YAML_BYTES}-byte YAML limit")
+        text = path.read_text(encoding="utf-8")
+        loaded = yaml.safe_load(text)
+    except (OSError, yaml.YAMLError) as exc:
+        raise ContractError(f"cannot safely load source registry: {exc}") from exc
+    if isinstance(loaded, list):
+        document = {"schema_version": REGISTRY_VERSION, "sources": [_legacy_entry(item) for item in loaded]}
+    elif isinstance(loaded, dict):
+        document = dict(loaded)
+        document["sources"] = [_legacy_entry(item) for item in document.get("sources", [])]
+    else:
+        raise ContractError("source registry must be a mapping or legacy list")
+    validate_contract(document, "source-registry", contract_root)
+    return document
+
+
+def parse_registry() -> list[dict[str, Any]]:
+    if not REGISTRY_PATH.exists() and not REGISTRY_PATH.is_symlink():
         return []
-    entries: list[dict[str, str]] = []
-    current: dict[str, str] | None = None
-    for raw_line in REGISTRY_PATH.read_text(encoding="utf-8").splitlines():
-        if not raw_line.strip():
-            continue
-        if raw_line.startswith("- "):
-            if current is not None:
-                entries.append(current)
-            current = {}
-            remainder = raw_line[2:]
-            if ":" in remainder:
-                key, value = remainder.split(":", 1)
-                current[key.strip()] = value.strip().strip('"')
-        elif raw_line.startswith("  ") and current is not None and ":" in raw_line:
-            key, value = raw_line.strip().split(":", 1)
-            current[key.strip()] = value.strip().strip('"')
-    if current is not None:
-        entries.append(current)
-    return entries
+    return [dict(entry) for entry in load_registry_document()["sources"]]
 
 
-def write_registry(entries: list[dict[str, str]]) -> None:
-    REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    lines: list[str] = []
-    for entry in sorted(entries, key=lambda item: item["source_id"]):
-        lines.append(f'- source_id: "{entry["source_id"]}"')
-        for key in [
-            "raw_path",
-            "reference_path",
-            "hash_sha256",
-            "source_type",
-            "date_ingested",
-            "date_published",
-            "status",
-        ]:
-            lines.append(f'  {key}: "{entry[key]}"')
-        lines.append("")
-    REGISTRY_PATH.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+def write_registry(entries: list[dict[str, Any]]) -> None:
+    document = {"schema_version": REGISTRY_VERSION, "sources": sorted(entries, key=lambda item: item["source_id"])}
+    validate_contract(document, "source-registry", ROOT)
+    yaml, _jsonschema = require_contract_dependencies()
+    ordered = {
+        "schema_version": REGISTRY_VERSION,
+        "sources": [{key: entry[key] for key in FIELD_ORDER} for entry in document["sources"]],
+    }
+    text = yaml.safe_dump(ordered, sort_keys=False, allow_unicode=True)
+    atomic_write_text(REGISTRY_PATH, text, ROOT)
 
 
 def source_type_for(path: Path) -> str:
     return SOURCE_TYPES_BY_SUFFIX.get(path.suffix.lower(), "other")
 
 
-def unique_source_id(path: Path, entries: list[dict[str, str]]) -> str:
+def stable_source_id(path: Path, digest: str, entries: list[dict[str, Any]]) -> str:
+    for entry in entries:
+        if entry["hash_sha256"] == digest:
+            return str(entry["source_id"])
     base = f"{today_utc()}-{slugify(path.stem)}"
-    existing = {entry["source_id"] for entry in entries}
-    if base not in existing:
+    by_id = {entry["source_id"]: entry["hash_sha256"] for entry in entries}
+    if base not in by_id or by_id[base] == digest:
         return base
     index = 2
-    while f"{base}-{index}" in existing:
+    while f"{base}-{index}" in by_id and by_id[f"{base}-{index}"] != digest:
         index += 1
     return f"{base}-{index}"
 
 
-def add_source(path: Path) -> tuple[dict[str, str], bool]:
-    path = path.resolve()
+def upsert_entry(entry: dict[str, Any]) -> tuple[dict[str, Any], bool]:
     entries = parse_registry()
+    for index, existing in enumerate(entries):
+        if existing["hash_sha256"] == entry["hash_sha256"]:
+            if existing["source_id"] != entry["source_id"]:
+                raise ContractError("registry hash is associated with a different source ID")
+            merged = {**existing, **entry}
+            entries[index] = merged
+            write_registry(entries)
+            return merged, False
+        if existing["source_id"] == entry["source_id"]:
+            raise ContractError("source ID collision with different content")
+    entries.append(entry)
+    write_registry(entries)
+    return entry, True
+
+
+def add_source(path: Path) -> tuple[dict[str, Any], bool]:
+    """Compatibility API; recoverable ingest should use ``ingest.py`` transitions."""
+    path = path.resolve()
     digest = sha256_file(path)
-    for entry in entries:
-        if entry.get("hash_sha256") == digest:
-            ensure_registered_raw(entry, path, digest)
-            return entry, True
-
-    source_id = unique_source_id(path, entries)
-    raw_name = f"{source_id}{path.suffix.lower() or '.txt'}"
-    raw_path = RAW_DIR / raw_name
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(path, raw_path)
-
+    entries = parse_registry()
+    source_id = stable_source_id(path, digest, entries)
+    raw_path = RAW_DIR / f"{source_id}{path.suffix.lower() or '.txt'}"
+    if symlink_component(raw_path, ROOT) is not None:
+        raise RuntimeError("raw evidence path must not traverse a symlink")
+    if not raw_path.exists():
+        raise RuntimeError("raw evidence must be preserved atomically by tools/ingest.py before registration")
     entry = {
         "source_id": source_id,
         "raw_path": raw_path.relative_to(ROOT).as_posix(),
@@ -118,108 +150,74 @@ def add_source(path: Path) -> tuple[dict[str, str], bool]:
         "date_ingested": today_utc(),
         "date_published": "unknown",
         "status": "active",
+        "ingest_state": "registered",
+        "access_level": "raw-only" if path.suffix.lower() == ".pdf" else "full-text",
+        "processed_path": None,
+        "derivative_path": None,
     }
-    entries.append(entry)
-    write_registry(entries)
-    return entry, False
+    return upsert_entry(entry)
 
 
-def ensure_registered_raw(entry: dict[str, str], source_path: Path, digest: str) -> None:
-    source_id = entry.get("source_id", "<missing>")
-    raw_value = entry.get("raw_path", "")
-    if not raw_value:
-        raise RuntimeError(f"{source_id}: duplicate source has no raw_path in registry")
-
-    raw_path = ROOT / raw_value
-    if raw_path.exists():
-        if not raw_path.is_file():
-            raise RuntimeError(f"{source_id}: registered raw path is not a file: {raw_value}")
-        actual = sha256_file(raw_path)
-        if actual != digest:
-            raise RuntimeError(f"{source_id}: registered raw file hash does not match registry: {raw_value}")
-        return
-
-    raw_path.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source_path, raw_path)
-    entry["_raw_restored"] = "true"
-
-
-def registered_entry_complete(entry: dict[str, str]) -> bool:
-    raw_value = entry.get("raw_path", "")
-    reference_value = entry.get("reference_path", "")
+def registered_entry_complete(entry: dict[str, Any]) -> bool:
+    raw_path = ROOT / str(entry.get("raw_path", ""))
+    reference_path = ROOT / str(entry.get("reference_path", ""))
     digest = entry.get("hash_sha256", "")
-    if not raw_value or not reference_value or not digest:
-        return False
-
-    raw_path = ROOT / raw_value
-    reference_path = ROOT / reference_value
-    if not raw_path.is_file() or not reference_path.is_file():
-        return False
-    return sha256_file(raw_path) == digest
+    return (
+        symlink_component(raw_path, ROOT) is None
+        and symlink_component(reference_path, ROOT) is None
+        and raw_path.is_file()
+        and reference_path.is_file()
+        and sha256_file(raw_path) == digest
+    )
 
 
 def validate_registry() -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     seen_hashes: dict[str, str] = {}
-    for entry in parse_registry():
-        source_id = entry.get("source_id", "<missing>")
-        raw_path = ROOT / entry.get("raw_path", "")
-        reference_path = ROOT / entry.get("reference_path", "")
-        digest = entry.get("hash_sha256", "")
-        if not raw_path.exists():
-            errors.append(f"{source_id}: raw path is missing: {entry.get('raw_path')}")
-            continue
-        actual = sha256_file(raw_path)
-        if actual != digest:
-            errors.append(f"{source_id}: hash mismatch for {entry.get('raw_path')}")
-        if not reference_path.exists():
-            warnings.append(f"{source_id}: reference page is missing: {entry.get('reference_path')}")
+    seen_ids: set[str] = set()
+    try:
+        entries = parse_registry()
+    except ContractError as exc:
+        return [str(exc)], []
+    for entry in entries:
+        source_id = str(entry["source_id"])
+        raw_path = ROOT / entry["raw_path"]
+        reference_path = ROOT / entry["reference_path"]
+        digest = entry["hash_sha256"]
+        if source_id in seen_ids:
+            errors.append(f"{source_id}: duplicate source ID")
+        seen_ids.add(source_id)
         if digest in seen_hashes:
-            warnings.append(f"{source_id}: duplicate hash also used by {seen_hashes[digest]}")
+            errors.append(f"{source_id}: duplicate hash also used by {seen_hashes[digest]}")
         seen_hashes[digest] = source_id
+        if symlink_component(raw_path, ROOT) is not None or not raw_path.is_file():
+            errors.append(f"{source_id}: raw path is missing: {entry['raw_path']}")
+        elif sha256_file(raw_path) != digest:
+            errors.append(f"{source_id}: hash mismatch for {entry['raw_path']}")
+        if symlink_component(reference_path, ROOT) is not None or not reference_path.is_file():
+            warnings.append(f"{source_id}: reference page is missing: {entry['reference_path']}")
     return errors, warnings
 
 
 def main(argv: list[str]) -> int:
     if len(argv) < 2 or argv[1] in {"-h", "--help"}:
-        print("usage: python3 tools/source_registry.py add PATH | validate | list")
+        print("usage: python3 tools/source_registry.py validate | list")
         return 0
-
-    command = argv[1]
-    if command == "add":
-        if len(argv) < 3:
-            print("FAIL: add requires a path")
-            return 1
-        for item in argv[2:]:
-            entry, duplicate = add_source(Path(item))
-            prefix = "DUPLICATE" if duplicate else "ADDED"
-            print(f"{prefix}: {entry['source_id']} -> {entry['raw_path']}")
-        return 0
-
-    if command == "validate":
+    if argv[1] == "validate":
         errors, warnings = validate_registry()
-        if errors:
-            print("FAIL: source registry validation failed")
-            for error in errors:
-                print(f"- {error}")
-            for warning in warnings:
-                print(f"- WARN: {warning}")
-            return 1
-        if warnings:
-            print("WARN: source registry validation passed with warnings")
-            for warning in warnings:
-                print(f"- {warning}")
-            return 0
-        print(f"PASS: validated {len(parse_registry())} source registry entries")
-        return 0
-
-    if command == "list":
+        for item in errors:
+            print(f"FAIL: {item}")
+        for item in warnings:
+            print(f"WARN: {item}")
+        if not errors:
+            print(f"PASS: validated {len(parse_registry())} source registry entries")
+        return 1 if errors else 0
+    if argv[1] == "list":
         for entry in parse_registry():
-            print(f"{entry['source_id']}\t{entry['raw_path']}\t{entry['status']}")
+            print(f"{entry['source_id']}\t{entry['raw_path']}\t{entry['ingest_state']}\t{entry['access_level']}")
         return 0
-
-    print(f"FAIL: unknown command `{command}`")
+    print(f"FAIL: unknown command `{argv[1]}`")
     return 1
 
 

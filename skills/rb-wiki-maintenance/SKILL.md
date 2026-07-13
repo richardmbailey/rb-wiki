@@ -25,6 +25,8 @@ If multiple wiki base directories are present, choose the one the user named. If
 2. Read `AGENTS.md`, `README.md`, `wiki/index.md`, recent `wiki/log.md`, and the latest reports in `reports/ingest/`, `reports/lint/`, and `reports/review/` where present.
 3. Run the appropriate command:
 
+   If the operation can mutate a report, generated routing asset, or page, follow `docs/AGENT_OPERATIONS.md`: use `wiki_run.py run` for the bounded scheduled maintenance lane or `start`/`heartbeat`/`finish` for an external agent session. Do not enable or manufacture a grant as part of ordinary maintenance. Direct commands below are diagnostic/manual commands only when no managed mutation is being claimed.
+
    Quick or unspecified:
 
    ```bash
@@ -34,24 +36,18 @@ If multiple wiki base directories are present, choose the one the user named. If
    Nightly upkeep:
 
    ```bash
-   PYTHONDONTWRITEBYTECODE=1 python3 tools/wiki_cron.py nightly
+   PYTHONDONTWRITEBYTECODE=1 python3 tools/wiki_cron.py nightly --authority AUTHORITY_ID
    ```
 
    Weekly/full/deep clean:
 
    ```bash
-   PYTHONDONTWRITEBYTECODE=1 python3 tools/wiki_cron.py weekly
+   PYTHONDONTWRITEBYTECODE=1 python3 tools/wiki_cron.py weekly --authority AUTHORITY_ID
    ```
 
-4. Review generated reports. Prioritize issues in this order:
-   1. raw source integrity and registry/hash mismatches;
-   2. invalid frontmatter, reserved-file issues, malformed YAML, and broken links;
-   3. missing or invalid source coverage;
-   4. stale high-degree pages and overview drift;
-   5. contradiction candidates affecting important syntheses;
-   6. orphan pages and weak reciprocal linking;
-   7. oversized pages and duplicate candidates;
-   8. coverage gaps and candidate new pages.
+   Both wrappers require committed scheduled-maintenance authority. Weekly additionally persists a typed lint report, so its grant must allow `reports/lint/**`.
+
+4. Review the canonical JSON report. First order results by `outcome` (`fail`, then `warn`), then severity (`critical` to `info`), then disposition (`human-required`, `agent-required`, `fix`, `monitor`, `none`). Treat `not_run` as unavailable assessment work, never a pass. Within that ordering, prioritize raw/provenance integrity, structural validity, overdue Reference integration, source coverage, ordinary-page orphans, and editorial assessment queues.
 5. Make only mechanical, unambiguous repairs. For substantive content, contradiction handling, merges, deletes, renames, or schema changes, write review notes and ask the user.
 6. Re-run quick lint after any repair.
 7. Summarize health status, generated reports, warnings, repairs made, and review items.
@@ -60,12 +56,15 @@ If multiple wiki base directories are present, choose the one the user named. If
 
 - Do not delete files, merge pages, rename pages, resolve serious contradictions, rewrite important synthesis, or change schemas without explicit approval.
 - Do not treat scheduled reports as authority to make irreversible changes.
+- Do not infer autonomy from a report. The v0.2 controller supports only the modes/actions in a committed grant; scoped automatic commits are local-only and never push.
+- Exit `5` means the local commit succeeded and authenticated reconciliation is required; do not rerun maintenance or break the retained lock.
 - Do not scan all page bodies before routing through index, frontmatter, graph, search, and reports.
+- Trust cached graph routing only when its version and complete source digest validate.
 - Raw source files in `sources/raw/` are immutable.
+- Agent metadata and external check evidence are attribution only. Keep them bounded and secret-free; do not claim a controller-executed result from an external attestation.
 
 ## Outputs
 
 - A lint or review report under `reports/`.
 - Rebuilt `wiki/index.md` and `.wiki_cache/graph.json` when needed.
 - A concise final summary with overall status and prioritized next actions.
-

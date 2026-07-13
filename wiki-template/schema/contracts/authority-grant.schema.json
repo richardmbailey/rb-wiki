@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-authority-grant/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "authority_id", "enabled", "owner", "issued_at", "expires_at", "revoked_at", "modes", "lanes", "actions", "input_roots", "writable_paths", "page_types", "required_checks", "consequence_tier", "budgets", "commit_policy", "commit_identity", "governance_maintenance"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-authority-grant/0.2"},
+    "authority_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+    "enabled": {"type": "boolean"},
+    "owner": {"type": "string", "minLength": 1, "maxLength": 128},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "revoked_at": {"type": ["string", "null"], "format": "date-time"},
+    "modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["manual-assist", "scheduled-propose", "authorised-autonomous-apply"]}},
+    "lanes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["maintain", "acquire", "ingest", "synthesize", "semantic", "governance"]}},
+    "actions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["deterministic-maintenance", "acquire-sources", "ingest-sources", "preserve-unsupported", "propose-synthesis", "edit-wiki-pages", "governance-maintenance"]}},
+    "input_roots": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/path"}},
+    "writable_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/path"}},
+    "page_types": {"type": "array", "uniqueItems": true, "items": {"enum": ["Concept", "Entity", "Summary", "Synthesis", "Decision", "Contradiction", "Reference", "Dataset", "Method", "Tool", "Project", "Overview"]}},
+    "required_checks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["quick-lint"]}},
+    "consequence_tier": {"enum": ["routine", "material", "high-consequence"]},
+    "budgets": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_runtime_seconds", "max_changed_paths", "max_acquired_sources"],
+      "properties": {
+        "max_runtime_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "max_changed_paths": {"type": "integer", "minimum": 0, "maximum": 1000},
+        "max_acquired_sources": {"type": "integer", "minimum": 0, "maximum": 10000}
+      }
+    },
+    "commit_policy": {"enum": ["forbidden", "manual", "scoped-auto"]},
+    "commit_identity": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["name", "email"],
+          "properties": {
+            "name": {"type": "string", "minLength": 1, "maxLength": 128},
+            "email": {"type": "string", "format": "email", "maxLength": 254}
+          }
+        }
+      ]
+    },
+    "governance_maintenance": {"type": "boolean"}
+  },
+  "$defs": {
+    "path": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[A-Za-z0-9._*?/-]+$"}
+  }
+}

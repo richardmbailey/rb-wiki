@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-lane-contract/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "lane_id", "controller_lane", "purpose", "allowed_modes", "actions_by_mode", "closure_profile_by_mode", "consumes", "produces", "produces_by_mode", "required_produces_by_mode", "substantive_wiki_edits", "substantive_wiki_edit_modes", "required_checks", "required_checks_by_mode"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-lane-contract/0.2"},
+    "lane_id": {"enum": ["acquire", "ingest", "synthesize", "deterministic-maintain", "semantic-maintain", "governance-maintain"]},
+    "controller_lane": {"enum": ["acquire", "ingest", "synthesize", "maintain", "semantic", "governance"]},
+    "purpose": {"type": "string", "minLength": 1},
+    "allowed_modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["manual-assist", "scheduled-propose", "authorised-autonomous-apply"]}},
+    "actions_by_mode": {
+      "description": "The single authority action required for each allowed mode; these values are alternatives, not cumulative requirements.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "manual-assist": {"$ref": "#/$defs/action"},
+        "scheduled-propose": {"$ref": "#/$defs/action"},
+        "authorised-autonomous-apply": {"$ref": "#/$defs/action"}
+      }
+    },
+    "closure_profile_by_mode": {
+      "description": "The deterministic controller closure specialization selected for each allowed mode.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "manual-assist": {"$ref": "#/$defs/closureProfile"},
+        "scheduled-propose": {"$ref": "#/$defs/closureProfile"},
+        "authorised-autonomous-apply": {"$ref": "#/$defs/closureProfile"}
+      }
+    },
+    "consumes": {"type": "array", "uniqueItems": true, "items": {"enum": ["inbox-files", "acquisition-result", "source-transition", "source-registry", "reference-pages", "synthesis-proposal", "approval-record", "semantic-output"]}},
+    "produces": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}},
+    "produces_by_mode": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "manual-assist": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}},
+        "scheduled-propose": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}},
+        "authorised-autonomous-apply": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}}
+      }
+    },
+    "required_produces_by_mode": {
+      "description": "The output classes for which authority scope must be present before a run starts. These must be a subset of produces_by_mode for the same mode.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "manual-assist": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}},
+        "scheduled-propose": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}},
+        "authorised-autonomous-apply": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}}
+      }
+    },
+    "substantive_wiki_edits": {"type": "boolean"},
+    "substantive_wiki_edit_modes": {"type": "array", "uniqueItems": true, "items": {"enum": ["manual-assist", "scheduled-propose", "authorised-autonomous-apply"]}},
+    "required_checks": {
+      "description": "Lane-specific closure checks across agent-reported and controller-validated evidence; an authority grant may require additional agent-reported checks.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["quick-lint", "provenance", "proposal-payload", "approval-binding", "semantic-output"]}
+    },
+    "required_checks_by_mode": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "manual-assist": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/check"}},
+        "scheduled-propose": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/check"}},
+        "authorised-autonomous-apply": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/check"}}
+      }
+    }
+  },
+  "$defs": {
+    "action": {"enum": ["acquire-sources", "ingest-sources", "propose-synthesis", "edit-wiki-pages", "deterministic-maintenance", "governance-maintenance"]},
+    "closureProfile": {"enum": ["generic", "acquisition-result", "manual-semantic", "scheduled-synthesis", "autonomous-semantic-apply"]},
+    "artifact": {"enum": ["acquisition-result", "raw-sources", "derived-sources", "source-transition", "source-registry", "reference-pages", "routing-index", "graph-cache", "ingest-report", "synthesis-proposal", "semantic-output", "lint-report", "wiki-pages", "governance-files", "run-record"]},
+    "check": {"enum": ["quick-lint", "provenance", "proposal-payload", "approval-binding", "semantic-output"]}
+  }
+}

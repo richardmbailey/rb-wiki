@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-migration-registry/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "migrations"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-migrations/0.2"},
+    "migrations": {"type": "array", "items": {"$ref": "#/$defs/migration"}}
+  },
+  "$defs": {
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["migration_id", "from_profile", "to_profile", "classification", "reversible", "idempotency_key", "preconditions", "postconditions"],
+      "properties": {
+        "migration_id": {"type": "string"},
+        "from_profile": {"type": "string"},
+        "to_profile": {"type": "string"},
+        "classification": {"enum": ["mechanical-reviewed-patch"]},
+        "reversible": {"type": "boolean"},
+        "idempotency_key": {"type": "string"},
+        "preconditions": {"type": "array", "items": {"type": "string"}},
+        "postconditions": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

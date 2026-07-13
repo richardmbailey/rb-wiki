@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-source-transition/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "digest", "parent_run_id", "input_path", "input_size", "input_mtime_ns", "source_id", "suffix", "raw_path", "reference_path", "derivative_path", "processed_path", "planned_processed_path", "access_level", "state", "outcome", "completed_transitions", "failed_transition", "error", "next_transition", "captured_at", "updated_at", "resume_count", "last_run_transitions"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-source-transition/0.2"},
+    "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "parent_run_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "input_path": {"type": "string", "pattern": "^inbox/[A-Za-z0-9][A-Za-z0-9._ -]{0,199}$"},
+    "input_size": {"type": "integer", "minimum": 0},
+    "input_mtime_ns": {"type": "integer", "minimum": 0},
+    "source_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,127}$"},
+    "suffix": {"type": "string", "pattern": "^\\.[A-Za-z0-9]{1,16}$"},
+    "raw_path": {"type": "string", "pattern": "^sources/raw/[A-Za-z0-9._-]+$"},
+    "reference_path": {"type": "string", "pattern": "^wiki/references/[A-Za-z0-9._-]+\\.md$"},
+    "derivative_path": {"type": ["string", "null"], "pattern": "^sources/derived/[A-Za-z0-9._-]+$"},
+    "processed_path": {"type": ["string", "null"], "pattern": "^inbox/processed/[0-9]{4}-[0-9]{2}-[0-9]{2}/[A-Za-z0-9][A-Za-z0-9._ -]{0,199}$"},
+    "planned_processed_path": {"type": ["string", "null"], "pattern": "^inbox/processed/[0-9]{4}-[0-9]{2}-[0-9]{2}/[A-Za-z0-9][A-Za-z0-9._ -]{0,199}$"},
+    "access_level": {"enum": ["full-text", "raw-only", "metadata-only", "preservation-only"]},
+    "state": {"$ref": "#/$defs/transition"},
+    "outcome": {"enum": ["in-progress", "complete", "recovery-required"]},
+    "completed_transitions": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/transition"}},
+    "failed_transition": {"oneOf": [{"$ref": "#/$defs/transition"}, {"type": "null"}]},
+    "error": {"type": ["string", "null"], "maxLength": 8000},
+    "next_transition": {"oneOf": [{"$ref": "#/$defs/transition"}, {"type": "null"}]},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "resume_count": {"type": "integer", "minimum": 0},
+    "last_run_transitions": {"type": "array", "items": {"$ref": "#/$defs/transition"}}
+  },
+  "$defs": {
+    "transition": {"enum": ["captured", "raw-preserved", "registered", "reference-created", "validated", "inbox-archived"]}
+  }
+}

@@ -3,23 +3,34 @@ type: Reference
 title: "LLM-Wiki System Instructions"
 description: "A local design specification for building and maintaining an LLM-wiki with immutable sources, cited synthesis, and deterministic tooling."
 resource: "sources/raw/2026-07-09-llm-wiki-system-instructions.md"
-tags: [wiki-template, llm-wiki, reference, active]
-timestamp: 2026-07-09T00:00:00Z
+tags: [wiki-template, llm-wiki, reference, superseded]
+timestamp: 2026-07-13T00:00:00Z
 
 created: 2026-07-09
-status: active
-profile: llm-wiki-profile/0.1
+status: deprecated
+profile: llm-wiki-profile/0.2
 sources: []
 confidence: high
+review_state: reviewed
+review_priority: normal
+consequence_tier: ordinary
 source_id: "2026-07-09-llm-wiki-system-instructions"
 source_type: note
 hash_sha256: "45143feba5179fd9dddbeca65a629175224d939eb4b5807269ab86565da50ee7"
 date_published: unknown
 date_ingested: 2026-07-09
 authors: ["Richard Bailey"]
+source_access_level: full-text
+derived_text: ""
+extraction_status: not-applicable
+integration_state: integrated
+assessment_state: assessed
+validated_at: 2026-07-13T00:00:00Z
 ---
 
 The LLM-Wiki System Instructions define the operating model used to initialize and maintain this wiki template.
+
+This 9 July version is retained as historical evidence. It has been superseded by the [current LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md), which add the v0.2 human-agent operating and safety model.
 
 # Source Summary
 
@@ -61,3 +72,4 @@ The source describes a git-backed Markdown knowledge system where raw evidence i
 # Change History
 
 - `2026-07-09`: Registered as the seed source for the initial wiki setup.
+- `2026-07-13`: Marked as superseded after the current v0.2 instructions were registered. The original raw file was preserved unchanged.

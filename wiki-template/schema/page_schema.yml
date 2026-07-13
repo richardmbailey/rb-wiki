@@ -1,4 +1,7 @@
-profile: "llm-wiki-profile/0.1"
+profile: "llm-wiki-profile/0.2"
+compatible_read_profiles:
+  - "llm-wiki-profile/0.1"
+  - "llm-wiki-profile/0.2"
 required_fields:
   - type
   - title
@@ -11,6 +14,9 @@ required_fields:
   - profile
   - sources
   - confidence
+  - review_state
+  - review_priority
+  - consequence_tier
 allowed_types:
   - Concept
   - Entity
@@ -35,5 +41,16 @@ allowed_confidence:
   - medium
   - low
   - uncertain
+allowed_review_states:
+  - pending
+  - in-review
+  - reviewed
+  - blocked
+allowed_review_priorities:
+  - normal
+  - high
+  - critical
+allowed_consequence_tiers:
+  - ordinary
+  - high-consequence
 word_limit: 1000
-

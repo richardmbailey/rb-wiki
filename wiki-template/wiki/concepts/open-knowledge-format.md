@@ -8,10 +8,13 @@ timestamp: 2026-07-09T00:00:00Z
 
 created: 2026-07-09
 status: needs-review
-profile: llm-wiki-profile/0.1
+profile: llm-wiki-profile/0.2
 sources:
-  - "/references/2026-07-09-llm-wiki-system-instructions.md"
+  - "/references/2026-07-13-llm-wiki-system-instructions.md"
 confidence: medium
+review_state: pending
+review_priority: normal
+consequence_tier: ordinary
 ---
 
 Open Knowledge Format is the portable Markdown bundle baseline that this wiki extends with a stricter local profile.
@@ -38,7 +41,7 @@ The seed design treats OKF as an exchange format made of Markdown files, YAML fr
 
 # Citations
 
-- [LLM-Wiki System Instructions](/references/2026-07-09-llm-wiki-system-instructions.md)
+- [LLM-Wiki System Instructions](/references/2026-07-13-llm-wiki-system-instructions.md)
 
 # Change History
 

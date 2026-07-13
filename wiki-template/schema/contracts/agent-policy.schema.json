@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-agent-policy/0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "permitted_modes", "limits", "heartbeat_seconds", "lease_seconds", "permitted_commit_policies", "ingest_limits", "lifecycle", "runtime_retention_days", "require_clean_base_for", "unsupported_topologies"],
+  "properties": {
+    "schema_version": {"const": "rb-wiki-agent-policy/0.2"},
+    "policy_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+    "permitted_modes": {"type": "array", "uniqueItems": true, "items": {"enum": ["manual-assist", "scheduled-propose", "authorised-autonomous-apply"]}},
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_runtime_seconds", "max_changed_files", "max_acquired_sources"],
+      "properties": {
+        "max_runtime_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "max_changed_files": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "max_acquired_sources": {"type": "integer", "minimum": 0, "maximum": 10000}
+      }
+    },
+    "heartbeat_seconds": {"type": "integer", "minimum": 10, "maximum": 300},
+    "lease_seconds": {"type": "integer", "minimum": 60, "maximum": 3600},
+    "permitted_commit_policies": {"type": "array", "uniqueItems": true, "items": {"enum": ["forbidden", "manual", "scoped-auto"]}},
+    "ingest_limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_files", "max_file_bytes"],
+      "properties": {
+        "max_files": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "max_file_bytes": {"type": "integer", "minimum": 1, "maximum": 10737418240}
+      }
+    },
+    "lifecycle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_integration_grace_days", "high_priority_escalates_immediately", "high_consequence_escalates_immediately"],
+      "properties": {
+        "reference_integration_grace_days": {"type": "integer", "minimum": 0, "maximum": 365},
+        "high_priority_escalates_immediately": {"type": "boolean"},
+        "high_consequence_escalates_immediately": {"type": "boolean"}
+      }
+    },
+    "runtime_retention_days": {"type": "integer", "minimum": 1, "maximum": 365},
+    "require_clean_base_for": {"type": "array", "uniqueItems": true, "items": {"enum": ["scheduled-propose", "authorised-autonomous-apply"]}},
+    "unsupported_topologies": {"type": "array", "uniqueItems": true, "items": {"enum": ["multiple-worktrees"]}}
+  }
+}
