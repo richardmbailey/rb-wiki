@@ -29,7 +29,7 @@ class AutonomousApplyScopeTests(unittest.TestCase):
                 root, "synthesize", "authorised-autonomous-apply", "apply-agent", "test-proposal"
             )
             write_apply_run(root, envelope["run_id"], proposed)
-            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 0)
             self.assertEqual(record["state"], "completed")
             self.assertIsNotNone(record["commit_hash"])
@@ -42,7 +42,7 @@ class AutonomousApplyScopeTests(unittest.TestCase):
             )
             write_apply_run(root, envelope["run_id"], proposed, content=proposed["apply_payload"]["files"][0]["content"] + "extra")
             with self.assertRaisesRegex(ContractError, "does not match approved target"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
 
 
 if __name__ == "__main__":

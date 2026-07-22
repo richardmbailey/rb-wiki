@@ -56,7 +56,7 @@ class CronExceptionSafetyTests(unittest.TestCase):
             ("empty-inbox-finish", False),
             ("per-file-ingest", True),
             ("report-write", True),
-            ("lint-subprocess", True),
+            ("controller-lint", True),
             ("finish", True),
             ("terminal-report-rendering", False),
             ("per-file-ingest,after-terminate", True),
@@ -71,7 +71,7 @@ class CronExceptionSafetyTests(unittest.TestCase):
                     env_overrides={"RB_WIKI_CRON_FAULT_STAGE": stage},
                 )
                 self.assert_coherent_failure(root)
-                if with_file and stage in {"report-write", "lint-subprocess", "finish"}:
+                if with_file and stage in {"report-write", "controller-lint", "finish"}:
                     self.assertTrue(list((root / "sources" / "raw").glob("*-fault.txt")))
                     self.assertTrue(list((root / ".wiki_state" / "sources").glob("*.json")))
 

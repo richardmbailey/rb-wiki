@@ -11,6 +11,7 @@ import secrets
 import socket
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -143,10 +144,16 @@ def update_record(record: dict[str, Any], journal: Path, root: Path, **changes: 
 def finish_record(
     record: dict[str, Any], journal: Path, root: Path, state: str, result: str, error: str | None = None
 ) -> None:
+    failed_next_action = (
+        f"Inspect reports/runs/{record['run_id']}.json and `git diff`; recover any material changes "
+        "before retrying."
+        if record.get("material")
+        else f"Inspect .wiki_state/runs/{record['run_id']}.json and resolve the recorded error before retrying."
+    )
     next_actions = {
         "completed": "No action required.",
         "blocked": "Resolve the reported blocker, then start a new run.",
-        "failed": "Inspect the run record and recover any material changes before retrying.",
+        "failed": failed_next_action,
         "cancelled": "No action required unless the work should be restarted.",
         "manual-commit-required": "Review and commit the reconciled paths manually.",
         "approval-required": "Commit the proposal, record a separate approval, then start a new apply run.",
@@ -248,26 +255,58 @@ def publish_commit_receipt(root: Path, transaction: dict[str, Any]) -> dict[str,
     return receipt
 
 
-def run_maintenance(root: Path, timeout_seconds: int, full: bool = False) -> tuple[int, str]:
+def _run_controller_commands(
+    root: Path,
+    commands: list[list[str]],
+    timeout_seconds: int,
+) -> tuple[int, str]:
     env = os.environ.copy()
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     env["RB_WIKI_RUN_CONTROLLER"] = "1"
-    command = [sys.executable, "tools/lint.py", "--full"] if full else [
-        sys.executable,
-        "tools/lint.py",
-        "--quick",
-        "--no-report",
-    ]
-    completed = subprocess.run(
-        command,
-        cwd=root,
-        env=env,
-        text=True,
-        capture_output=True,
-        check=False,
-        timeout=timeout_seconds,
+    deadline = time.monotonic() + timeout_seconds
+    outputs: list[str] = []
+    for command in commands:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise subprocess.TimeoutExpired(command, timeout_seconds)
+        completed = subprocess.run(
+            command,
+            cwd=root,
+            env=env,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=remaining,
+        )
+        output = (completed.stdout + completed.stderr).strip()
+        if output:
+            outputs.append(output)
+        if completed.returncode != 0:
+            return completed.returncode, "\n".join(outputs)
+    return 0, "\n".join(outputs)
+
+
+def run_controller_lint(root: Path, timeout_seconds: int) -> tuple[int, str]:
+    """Run the exact non-writing closure validation command."""
+    return _run_controller_commands(
+        root,
+        [[sys.executable, "tools/lint.py", "--quick", "--no-report"]],
+        timeout_seconds,
     )
-    return completed.returncode, (completed.stdout + completed.stderr).strip()
+
+
+def run_maintenance(root: Path, timeout_seconds: int, full: bool = False) -> tuple[int, str]:
+    """Own scheduled derived rebuilds separately from read-only closure lint."""
+    commands = (
+        [[sys.executable, "tools/lint.py", "--full"]]
+        if full
+        else [
+            [sys.executable, "tools/build_index.py"],
+            [sys.executable, "tools/build_graph.py"],
+            [sys.executable, "tools/lint.py", "--quick", "--no-report"],
+        ]
+    )
+    return _run_controller_commands(root, commands, timeout_seconds)
 
 
 def execute_run(
@@ -955,22 +994,16 @@ def validate_declared_input_snapshots(session: dict[str, Any], root: Path) -> No
             raise RunError(f"declared input content changed after snapshot: {relative}")
 
 
-def finish_session(root: Path, run_id: str, token: str, check_values: list[str]) -> tuple[int, dict[str, Any]]:
-    session = load_session(run_id, root)
-    require_token(session, token)
-    checks = parse_checks(check_values, root)
+def validate_session_change_scope(
+    session: dict[str, Any],
+    root: Path,
+    lane_contract: dict[str, Any],
+    authority: dict[str, Any],
+) -> tuple[list[dict[str, str]], list[str], set[str]]:
+    """Reconcile and validate the current worktree without trusting a later check."""
     record = session["record"]
-    journal = root / ".wiki_state" / "runs" / f"{run_id}.json"
-    if git_base_commit(root) != record["base_commit"]:
-        raise RunError("HEAD changed since run start")
-    authority, policy, lane_contract = validate_runtime_session_against_base(
-        session, root, datetime.now(timezone.utc)
-    )
-    validate_declared_input_snapshots(session, root)
-    transition_session(session, "validating", journal, root)
     final_entries = git_status_entries(root)
     final_paths = sorted({entry["path"] for entry in final_entries})
-    record["final_snapshot"] = final_entries
     initial_paths = set(record["initial_status"])
     changed = sorted(set(final_paths).difference(initial_paths))
     final_initial_fingerprints = path_fingerprints(sorted(initial_paths), root)
@@ -1006,6 +1039,57 @@ def finish_session(root: Path, run_id: str, token: str, check_values: list[str])
     if governance and not authority["governance_maintenance"]:
         raise RunError("governance-maintenance scope is required for: " + ", ".join(governance))
     enforce_page_scope(changed, authority["page_types"], root)
+    return final_entries, changed, initial_paths
+
+
+def finish_session(root: Path, run_id: str, token: str, check_values: list[str]) -> tuple[int, dict[str, Any]]:
+    session = load_session(run_id, root)
+    require_token(session, token)
+    checks = parse_checks(check_values, root)
+    record = session["record"]
+    journal = root / ".wiki_state" / "runs" / f"{run_id}.json"
+    if git_base_commit(root) != record["base_commit"]:
+        raise RunError("HEAD changed since run start")
+    authority, policy, lane_contract = validate_runtime_session_against_base(
+        session, root, datetime.now(timezone.utc)
+    )
+    validate_declared_input_snapshots(session, root)
+    transition_session(session, "validating", journal, root)
+    validate_session_change_scope(session, root, lane_contract, authority)
+    required_controller = (
+        set(authority["required_checks"])
+        | set(lane_contract["required_checks_by_mode"][record["mode"]])
+    ).intersection(CONTROLLER_CHECK_IDS)
+    if "quick-lint" in required_controller:
+        elapsed = (datetime.now(timezone.utc) - parse_utc(record["started_at"])).total_seconds()
+        runtime_limit = min(
+            authority["budgets"]["max_runtime_seconds"], policy["limits"]["max_runtime_seconds"]
+        )
+        remaining = int(runtime_limit - elapsed)
+        if remaining < 1:
+            raise RunError("maximum runtime budget exhausted before controller quick lint")
+        try:
+            lint_code, lint_output = run_controller_lint(root, remaining)
+        except subprocess.TimeoutExpired as exc:
+            lint_code, lint_output = 124, f"quick lint exceeded the remaining runtime budget: {exc}"
+        checks.append(
+            {
+                "check_id": "quick-lint",
+                "status": "pass" if lint_code == 0 else "fail",
+                "summary": lint_output[-4000:] if lint_output else "no subprocess output",
+                "provenance": "controller-executed",
+                "exit_code": lint_code,
+            }
+        )
+        if lint_code != 0:
+            record["checks"] = checks
+            update_record(record, journal, root)
+            save_session(session, root)
+            raise RunError("quick-lint validation failed: " + (lint_output[-1000:] or "no subprocess output"))
+    final_entries, changed, initial_paths = validate_session_change_scope(
+        session, root, lane_contract, authority
+    )
+    record["final_snapshot"] = final_entries
     semantic_proposal, approval_required = validate_lane_closure(
         lane_contract, record["mode"], root, run_id, changed, policy, authority, session
     )
@@ -1034,9 +1118,6 @@ def finish_session(root: Path, run_id: str, token: str, check_values: list[str])
                     "provenance": "controller-executed",
                 }
             )
-    required_controller = set(lane_contract["required_checks_by_mode"][record["mode"]]).intersection(
-        CONTROLLER_CHECK_IDS
-    )
     performed_controller = {
         check["check_id"] for check in checks if check.get("provenance") == "controller-executed"
     }

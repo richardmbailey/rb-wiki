@@ -3,13 +3,14 @@
   "$id": "rb-wiki-lint-report/0.2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "report_id", "created_at", "mode", "overall", "results", "queues", "capabilities"],
+  "required": ["schema_version", "report_id", "created_at", "mode", "overall", "semantic_review", "results", "queues", "capabilities"],
   "properties": {
     "schema_version": {"const": "rb-wiki-lint-report/0.2"},
     "report_id": {"type": "string"},
     "created_at": {"type": "string", "format": "date-time"},
     "mode": {"enum": ["quick", "full"]},
     "overall": {"enum": ["green", "yellow", "red"]},
+    "semantic_review": {"enum": ["not-requested", "complete", "required"]},
     "results": {"type": "array", "items": {"$ref": "#/$defs/check"}},
     "queues": {
       "type": "object", "additionalProperties": false,

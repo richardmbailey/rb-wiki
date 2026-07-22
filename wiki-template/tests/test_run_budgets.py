@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -32,8 +33,9 @@ class RunBudgetTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = self.make_manual(Path(temporary))
             envelope = start_session(root, "semantic", "manual-assist", "budget-editor")
-            with self.assertRaisesRegex(RunError, "validation failure"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=fail"])
+            with patch("wiki_run.run_controller_lint", return_value=(1, "forced lint failure")):
+                with self.assertRaisesRegex(RunError, "quick-lint validation failed"):
+                    finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_runtime_budget_is_enforced_from_persisted_start(self) -> None:
@@ -49,7 +51,7 @@ class RunBudgetTests(unittest.TestCase):
                 root,
             )
             with self.assertRaisesRegex(RunError, "runtime budget"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_changed_path_budget_prevents_closure(self) -> None:
@@ -66,7 +68,7 @@ class RunBudgetTests(unittest.TestCase):
             page = root / "wiki" / "concepts" / "frontmatter.md"
             page.write_text(page.read_text(encoding="utf-8") + "\nChange.\n", encoding="utf-8")
             with self.assertRaisesRegex(RunError, "changed-path budget"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
 

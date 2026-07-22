@@ -64,7 +64,7 @@ class SustainedOperationTests(unittest.TestCase):
                 "next_artifact": "source-transition",
             }
             write_json(root / "reports" / "acquisitions" / "sustained-acquisition.json", acquisition)
-            code, _record = finish_session(root, acquired["run_id"], acquired["run_token"], ["quick-lint=pass"])
+            code, _record = finish_session(root, acquired["run_id"], acquired["run_token"], [])
             self.assertEqual(code, 3)
             run(["git", "add", "."], root)
             run(["git", "commit", "-q", "-m", "record acquisition handoff"], root)
@@ -85,11 +85,21 @@ class SustainedOperationTests(unittest.TestCase):
             proposed = proposal(proposed_run["run_id"], proposal_id="sustained-proposal", with_payload=False)
             write_proposal_run(root, proposed_run["run_id"], proposed)
             code, _record = finish_session(
-                root, proposed_run["run_id"], proposed_run["run_token"], ["quick-lint=pass"]
+                root, proposed_run["run_id"], proposed_run["run_token"], []
             )
             self.assertEqual(code, 3)
             run(["git", "add", "."], root)
             run(["git", "commit", "-q", "-m", "record proposal handoff"], root)
+
+            routed = run_controller(root)
+            self.assertEqual(routed.returncode, 3, routed.stdout + routed.stderr)
+            reference = next((root / "wiki" / "references").glob("*-sustained.md"))
+            self.assertIn(
+                "/" + reference.relative_to(root / "wiki").as_posix(),
+                (root / "wiki" / "index.md").read_text(encoding="utf-8"),
+            )
+            run(["git", "add", "."], root)
+            run(["git", "commit", "-q", "-m", "record scheduled routing maintenance"], root)
 
             durable_before = len(list((root / "reports" / "runs").glob("*.json")))
             for _ in range(8):

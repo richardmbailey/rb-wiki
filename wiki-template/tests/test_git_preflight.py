@@ -50,7 +50,7 @@ class GitPreflightTests(unittest.TestCase):
             envelope = start_session(root, "synthesize", "authorised-autonomous-apply", "auto-editor", "test-proposal")
             self.edit(root, envelope["run_id"], proposed)
             with self.assertRaisesRegex(RunError, "detached HEAD"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_merge_and_sparse_states_block_scoped_auto(self) -> None:
@@ -67,7 +67,7 @@ class GitPreflightTests(unittest.TestCase):
                     run(["git", "config", "core.sparseCheckout", "true"], root)
                     expected = "sparse checkout"
                 with self.assertRaisesRegex(RunError, expected):
-                    finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                    finish_session(root, envelope["run_id"], envelope["run_token"], [])
                 terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_governance_paths_need_explicit_scope(self) -> None:

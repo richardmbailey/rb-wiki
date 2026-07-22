@@ -51,7 +51,7 @@ class ScopedAutoCommitTests(unittest.TestCase):
             base = run(["git", "rev-parse", "HEAD"], root).stdout.strip()
             envelope = start_session(root, "synthesize", "authorised-autonomous-apply", "auto-editor", "test-proposal")
             write_apply_run(root, envelope["run_id"], proposed)
-            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 0)
             self.assertEqual(record["state"], "completed")
             self.assertNotEqual(record["commit_hash"], base)
@@ -80,7 +80,7 @@ class ScopedAutoCommitTests(unittest.TestCase):
             write_apply_run(root, envelope["run_id"], proposed)
             run(["git", "add", page.relative_to(root).as_posix()], root)
             with self.assertRaisesRegex(RunError, "clean real index"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(run(["git", "rev-parse", "HEAD"], root).stdout.strip(), base)
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
@@ -91,7 +91,7 @@ class ScopedAutoCommitTests(unittest.TestCase):
             run(["git", "commit", "--allow-empty", "-q", "-m", "concurrent human commit"], root)
             concurrent = run(["git", "rev-parse", "HEAD"], root).stdout.strip()
             with self.assertRaisesRegex(RunError, "HEAD changed"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(run(["git", "rev-parse", "HEAD"], root).stdout.strip(), concurrent)
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 

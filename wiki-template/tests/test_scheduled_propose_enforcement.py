@@ -34,7 +34,7 @@ class ScheduledProposeEnforcementTests(unittest.TestCase):
             path = root / "wiki" / "syntheses" / "forbidden.md"
             path.write_text(target_content(), encoding="utf-8")
             with self.assertRaisesRegex(RunError, "forbids substantive wiki edits"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
 
 
 if __name__ == "__main__":

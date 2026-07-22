@@ -63,7 +63,7 @@ class DeclaredInputTests(unittest.TestCase):
             envelope = start_session(root, "ingest", "scheduled-propose", "scheduled-ingest")
             source.write_text("changed after snapshot\n", encoding="utf-8")
             with self.assertRaisesRegex(RunError, "declared input.*changed"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
 

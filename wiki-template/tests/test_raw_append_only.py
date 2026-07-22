@@ -46,7 +46,7 @@ class RawAppendOnlyTests(unittest.TestCase):
                 else:
                     raw.rename(raw.with_name("renamed.md"))
                 with self.assertRaisesRegex(RunError, "not append-only"):
-                    finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                    finish_session(root, envelope["run_id"], envelope["run_token"], [])
                 terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
 

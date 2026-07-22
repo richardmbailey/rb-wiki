@@ -100,7 +100,13 @@ def capability_snapshot(root: Path = ROOT) -> dict[str, object]:
             "schema/lanes/ingest.yml",
             "schema/lanes/synthesize.yml",
         ),
-        "bounded-semantic-apply": implemented("tools/wiki_run.py session closure", "tools/wiki_run.py", "tools/semantic_protocol.py"),
+        "bounded-semantic-apply": implemented(
+            "tools/wiki_cron.py apply",
+            "tools/authorised_apply.py",
+            "tools/wiki_cron.py",
+            "tools/wiki_run.py",
+            "tools/semantic_protocol.py",
+        ),
         "high-consequence-approval": implemented(
             "base-committed proposal and approval binding",
             "tools/semantic_protocol.py",

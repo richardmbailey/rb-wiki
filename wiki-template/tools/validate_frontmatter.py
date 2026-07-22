@@ -13,6 +13,7 @@ from wiki_lib import (
     DATE_RE,
     LOCAL_PROFILE,
     REQUIRED_FIELDS,
+    ROOT,
     TIMESTAMP_RE,
     SUPPORTED_PROFILES,
     WIKI_DIR,
@@ -22,10 +23,15 @@ from wiki_lib import (
 )
 
 
-def validate_page(path: Path) -> list[str]:
+def validate_page(
+    path: Path,
+    *,
+    contract_root: Path = ROOT,
+    label: str | None = None,
+) -> list[str]:
     errors: list[str] = []
-    frontmatter, _body, parse_error = parse_frontmatter(path)
-    label = wiki_relative(path)
+    frontmatter, _body, parse_error = parse_frontmatter(path, contract_root)
+    label = label or wiki_relative(path)
     if parse_error:
         return [f"{label}: {parse_error}"]
 

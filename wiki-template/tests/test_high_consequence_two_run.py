@@ -29,7 +29,7 @@ class HighConsequenceTwoRunTests(unittest.TestCase):
         envelope = start_session(root, "synthesize", "scheduled-propose", "proposal-agent")
         proposed = proposal(envelope["run_id"], tier="high-consequence")
         write_proposal_run(root, envelope["run_id"], proposed)
-        code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+        code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
         self.assertEqual((code, record["state"]), (4, "approval-required"))
         run(["git", "add", "."], root)
         run(["git", "commit", "-q", "-m", "commit high consequence proposal"], root)
@@ -54,7 +54,7 @@ class HighConsequenceTwoRunTests(unittest.TestCase):
                 approved["approval_id"],
             )
             write_apply_run(root, envelope["run_id"], proposed)
-            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 0)
             self.assertEqual(record["state"], "completed")
 

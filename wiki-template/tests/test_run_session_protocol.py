@@ -42,7 +42,7 @@ class RunSessionProtocolTests(unittest.TestCase):
             self.assertEqual(owner["lease_expires_at"], renewed["lease_expires_at"])
             status = status_session(root, envelope["run_id"])
             self.assertNotIn("run_token", status)
-            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 0)
             self.assertEqual(record["result"], "no-op")
             self.assertFalse((root / ".wiki_state" / "mutation.lock").exists())
@@ -90,8 +90,6 @@ class RunSessionProtocolTests(unittest.TestCase):
                     envelope["run_id"],
                     "--token",
                     envelope["run_token"],
-                    "--check",
-                    "quick-lint=pass",
                 ],
                 root,
             )
@@ -142,7 +140,7 @@ class RunSessionProtocolTests(unittest.TestCase):
             envelope = start_session(root, "semantic", "manual-assist", "manual-editor")
             with patch("wiki_run.datetime", FutureDateTime):
                 with self.assertRaisesRegex(RunError, "revoked"):
-                    finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                    finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_runtime_session_cannot_expand_base_committed_authority(self) -> None:
@@ -154,7 +152,7 @@ class RunSessionProtocolTests(unittest.TestCase):
             session["authority"]["writable_paths"].append("wiki/syntheses/**")
             session_path.write_text(json.dumps(session), encoding="utf-8")
             with self.assertRaisesRegex(RunError, "runtime session.*base"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_runtime_session_cannot_replace_the_bound_lane_contract(self) -> None:
@@ -166,7 +164,7 @@ class RunSessionProtocolTests(unittest.TestCase):
             session["lane_contract"]["digest_sha256"] = "0" * 64
             session_path.write_text(json.dumps(session), encoding="utf-8")
             with self.assertRaisesRegex(RunError, "lane contract differs"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_terminal_session_cannot_be_finished_or_terminated_again(self) -> None:
@@ -174,11 +172,11 @@ class RunSessionProtocolTests(unittest.TestCase):
             root = self.make_manual(Path(temporary))
             envelope = start_session(root, "semantic", "manual-assist", "manual-editor")
             code, completed = finish_session(
-                root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"]
+                root, envelope["run_id"], envelope["run_token"], []
             )
             self.assertEqual(code, 0)
             with self.assertRaisesRegex(RunError, "invalid run-state transition"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             with self.assertRaisesRegex(RunError, "already terminal"):
                 terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "again")
             persisted = json.loads(

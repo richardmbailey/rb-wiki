@@ -1,15 +1,157 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "rb-wiki-session/0.2",
-  "type": "object", "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rb-wiki-session/0.2",
+  "type": "object",
+  "additionalProperties": false,
   "required": ["schema_version", "record", "run_token", "authority", "policy", "lane_contract", "initial_entries", "initial_fingerprints", "initial_raw_fingerprints", "semantic_context", "proposal_id", "approval_id"],
   "properties": {
-    "schema_version": {"const": "rb-wiki-session/0.2"}, "record": {"type": "object"},
-    "run_token": {"type": "string", "minLength": 32, "maxLength": 256},
-    "authority": {"type": "object"}, "policy": {"type": "object"}, "lane_contract": {"type": "object"},
-    "initial_entries": {"type": "array", "items": {"type": "object"}},
-    "initial_fingerprints": {"type": "object", "additionalProperties": {"type": "string"}},
-    "initial_raw_fingerprints": {"type": "object", "additionalProperties": {"type": "string"}},
-    "semantic_context": {"type": "object"},
-    "proposal_id": {"type": ["string", "null"]}, "approval_id": {"type": ["string", "null"]}
+    "schema_version": {"const": "rb-wiki-session/0.2"},
+    "record": {"$ref": "#/$defs/record"},
+    "run_token": {"type": "string", "minLength": 36, "maxLength": 256, "pattern": "^run_[A-Za-z0-9_-]+$"},
+    "authority": {"$ref": "#/$defs/authority"},
+    "policy": {"$ref": "#/$defs/policy"},
+    "lane_contract": {"$ref": "#/$defs/laneBinding"},
+    "initial_entries": {"type": "array", "items": {"$ref": "#/$defs/statusEntry"}},
+    "initial_fingerprints": {"$ref": "#/$defs/fingerprints"},
+    "initial_raw_fingerprints": {"$ref": "#/$defs/fingerprints"},
+    "semantic_context": {"$ref": "#/$defs/semanticContext"},
+    "proposal_id": {"$ref": "#/$defs/nullableArtifactId"},
+    "approval_id": {"$ref": "#/$defs/nullableArtifactId"}
+  },
+  "$defs": {
+    "runId": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{12}$"},
+    "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "identifier": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"},
+    "nullableArtifactId": {"type": ["string", "null"], "pattern": "^[a-z0-9][a-z0-9-]{1,127}$"},
+    "lane": {"enum": ["maintain", "acquire", "ingest", "synthesize", "semantic", "governance"]},
+    "mode": {"enum": ["manual-assist", "scheduled-propose", "authorised-autonomous-apply"]},
+    "path": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[A-Za-z0-9._*?/-]+$"},
+    "record": {
+      "type": "object",
+      "required": ["schema_version", "run_id", "lane", "mode", "authority_id", "lane_contract", "state"],
+      "properties": {
+        "schema_version": {"const": "rb-wiki-run-record/0.2"},
+        "run_id": {"$ref": "#/$defs/runId"},
+        "lane": {"$ref": "#/$defs/lane"},
+        "mode": {"$ref": "#/$defs/mode"},
+        "authority_id": {"$ref": "#/$defs/identifier"},
+        "lane_contract": {"$ref": "#/$defs/laneBinding"},
+        "state": {"enum": ["created", "locked", "preflight", "running", "validating", "committed-recovery-required", "manual-commit-required", "approval-required", "completed", "blocked", "failed", "cancelled"]}
+      }
+    },
+    "laneBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "lane_id", "controller_lane", "path", "digest_sha256"],
+      "properties": {
+        "schema_version": {"const": "rb-wiki-lane-contract/0.2"},
+        "lane_id": {"$ref": "#/$defs/identifier"},
+        "controller_lane": {"$ref": "#/$defs/lane"},
+        "path": {"type": "string", "pattern": "^schema/lanes/[a-z0-9-]+\\.yml$"},
+        "digest_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "statusEntry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "path"],
+      "properties": {
+        "status": {"type": "string", "minLength": 2, "maxLength": 2},
+        "path": {"type": "string", "minLength": 1, "maxLength": 4096}
+      }
+    },
+    "fingerprints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^(?:[a-f0-9]{64}|missing|non-file|symlink:.+)$"
+      }
+    },
+    "budgets": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_runtime_seconds", "max_changed_paths", "max_acquired_sources"],
+      "properties": {
+        "max_runtime_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "max_changed_paths": {"type": "integer", "minimum": 0, "maximum": 1000},
+        "max_acquired_sources": {"type": "integer", "minimum": 0, "maximum": 10000}
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "authority_id", "enabled", "owner", "issued_at", "expires_at", "revoked_at", "modes", "lanes", "actions", "input_roots", "writable_paths", "page_types", "required_checks", "consequence_tier", "budgets", "commit_policy", "commit_identity", "governance_maintenance"],
+      "properties": {
+        "schema_version": {"const": "rb-wiki-authority-grant/0.2"},
+        "authority_id": {"$ref": "#/$defs/identifier"},
+        "enabled": {"type": "boolean"},
+        "owner": {"type": "string", "minLength": 1, "maxLength": 128},
+        "issued_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "revoked_at": {"type": ["string", "null"], "format": "date-time"},
+        "modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/mode"}},
+        "lanes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/lane"}},
+        "actions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["deterministic-maintenance", "acquire-sources", "ingest-sources", "preserve-unsupported", "propose-synthesis", "edit-wiki-pages", "governance-maintenance"]}},
+        "input_roots": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/path"}},
+        "writable_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/path"}},
+        "page_types": {"type": "array", "uniqueItems": true, "items": {"enum": ["Concept", "Entity", "Summary", "Synthesis", "Decision", "Contradiction", "Reference", "Dataset", "Method", "Tool", "Project", "Overview"]}},
+        "required_checks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"const": "quick-lint"}},
+        "consequence_tier": {"enum": ["routine", "material", "high-consequence"]},
+        "budgets": {"$ref": "#/$defs/budgets"},
+        "commit_policy": {"enum": ["forbidden", "manual", "scoped-auto"]},
+        "commit_identity": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["name", "email"],
+              "properties": {"name": {"type": "string", "minLength": 1, "maxLength": 128}, "email": {"type": "string", "format": "email", "maxLength": 254}}
+            }
+          ]
+        },
+        "governance_maintenance": {"type": "boolean"}
+      }
+    },
+    "policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "policy_id", "permitted_modes", "limits", "heartbeat_seconds", "lease_seconds", "permitted_commit_policies", "ingest_limits", "lifecycle", "runtime_retention_days", "require_clean_base_for", "unsupported_topologies"],
+      "properties": {
+        "schema_version": {"const": "rb-wiki-agent-policy/0.2"},
+        "policy_id": {"$ref": "#/$defs/identifier"},
+        "permitted_modes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/mode"}},
+        "limits": {
+          "type": "object", "additionalProperties": false,
+          "required": ["max_runtime_seconds", "max_changed_files", "max_acquired_sources"],
+          "properties": {"max_runtime_seconds": {"type": "integer", "minimum": 1, "maximum": 3600}, "max_changed_files": {"type": "integer", "minimum": 1, "maximum": 1000}, "max_acquired_sources": {"type": "integer", "minimum": 0, "maximum": 10000}}
+        },
+        "heartbeat_seconds": {"type": "integer", "minimum": 10, "maximum": 300},
+        "lease_seconds": {"type": "integer", "minimum": 60, "maximum": 3600},
+        "permitted_commit_policies": {"type": "array", "uniqueItems": true, "items": {"enum": ["forbidden", "manual", "scoped-auto"]}},
+        "ingest_limits": {
+          "type": "object", "additionalProperties": false,
+          "required": ["max_files", "max_file_bytes"],
+          "properties": {"max_files": {"type": "integer", "minimum": 1, "maximum": 1000}, "max_file_bytes": {"type": "integer", "minimum": 1, "maximum": 10737418240}}
+        },
+        "lifecycle": {
+          "type": "object", "additionalProperties": false,
+          "required": ["reference_integration_grace_days", "high_priority_escalates_immediately", "high_consequence_escalates_immediately"],
+          "properties": {"reference_integration_grace_days": {"type": "integer", "minimum": 0, "maximum": 365}, "high_priority_escalates_immediately": {"type": "boolean"}, "high_consequence_escalates_immediately": {"type": "boolean"}}
+        },
+        "runtime_retention_days": {"type": "integer", "minimum": 1, "maximum": 365},
+        "require_clean_base_for": {"type": "array", "uniqueItems": true, "items": {"enum": ["scheduled-propose", "authorised-autonomous-apply"]}},
+        "unsupported_topologies": {"type": "array", "uniqueItems": true, "items": {"const": "multiple-worktrees"}}
+      }
+    },
+    "semanticContext": {
+      "oneOf": [
+        {"type": "object", "maxProperties": 0},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["proposal", "approval", "consequence_policy", "domain_policy"],
+          "properties": {
+            "proposal": {"type": "object"},
+            "approval": {"type": ["object", "null"]},
+            "consequence_policy": {"type": "object"},
+            "domain_policy": {"type": "object"}
+          }
+        }
+      ]
+    }
   }
 }

@@ -20,6 +20,7 @@ class StructuredReportTests(unittest.TestCase):
             "created_at": "2026-07-13T12:00:00Z",
             "mode": "quick",
             "overall": "green",
+            "semantic_review": "not-requested",
             "results": [check_result("test-check", "Test check", "pass")],
             "queues": {"blockers": [], "overdue": [], "agent_required": []},
             "capabilities": capability_snapshot(),
@@ -28,6 +29,8 @@ class StructuredReportTests(unittest.TestCase):
         first = render_report_markdown(report)
         self.assertEqual(first, render_report_markdown(report))
         self.assertIn("`pass`", first)
+        self.assertIn("Structural health: `green`", first)
+        self.assertIn("Semantic review: `not-requested`", first)
 
 
 if __name__ == "__main__":

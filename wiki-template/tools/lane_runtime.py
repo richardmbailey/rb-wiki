@@ -34,7 +34,13 @@ EXPECTED_LANE_IDS = {
     "semantic-maintain",
     "governance-maintain",
 }
-CONTROLLER_CHECK_IDS = {"semantic-output", "provenance", "proposal-payload", "approval-binding"}
+CONTROLLER_CHECK_IDS = {
+    "quick-lint",
+    "semantic-output",
+    "provenance",
+    "proposal-payload",
+    "approval-binding",
+}
 CONTROLLER_ONLY_ARTIFACTS = {"run-record", "source-transition"}
 
 ARTIFACT_WRITE_PATTERNS: dict[str, tuple[str, ...]] = {

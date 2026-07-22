@@ -12,6 +12,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+sys.dont_write_bytecode = True
+
 from capabilities import capability_snapshot
 from provenance import validate_provenance
 from authority import load_runtime_policy
@@ -67,10 +69,13 @@ def check_result(
 
 def run_tool(script: str, *args: str) -> dict[str, Any]:
     command = [sys.executable, str(ROOT / "tools" / script), *args]
+    env = os.environ.copy()
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
     try:
         completed = subprocess.run(
             command,
             cwd=ROOT,
+            env=env,
             text=True,
             capture_output=True,
             check=False,
@@ -268,7 +273,22 @@ def overall_for(results: list[dict[str, Any]]) -> str:
     return "red" if highest == 2 else "yellow" if highest == 1 else "green"
 
 
-def build_report(mode: str, now: datetime | None = None) -> dict[str, Any]:
+def semantic_review_for(mode: str, results: list[dict[str, Any]]) -> str:
+    if mode != "full":
+        return "not-requested"
+    expected = {"semantic-staleness", "semantic-coverage", "semantic-contradictions"}
+    semantic = {item["check_id"]: item for item in results if item["check_id"] in expected}
+    if set(semantic) != expected or any(item["outcome"] == "not_run" for item in semantic.values()):
+        return "required"
+    return "complete"
+
+
+def build_report(
+    mode: str,
+    now: datetime | None = None,
+    *,
+    include_mutating_builders: bool = True,
+) -> dict[str, Any]:
     current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc).replace(microsecond=0)
     results = [
         run_tool("check_reserved_files.py"),
@@ -276,15 +296,20 @@ def build_report(mode: str, now: datetime | None = None) -> dict[str, Any]:
         run_tool("check_links.py"),
         run_tool("word_count.py"),
         run_tool("detect_duplicates.py"),
-        run_tool("build_index.py"),
-        run_tool("build_graph.py"),
-        registry_result(),
-        provenance_result(),
-        source_coverage_result(),
-        orphan_result(),
     ]
+    if include_mutating_builders:
+        results.extend([run_tool("build_index.py"), run_tool("build_graph.py")])
+    results.extend(
+        [
+            registry_result(),
+            provenance_result(),
+            source_coverage_result(),
+            orphan_result(),
+        ]
+    )
     lifecycle, overdue = reference_lifecycle_result(current)
     results.append(lifecycle)
+    structural_overall = overall_for(results)
     if mode == "full":
         results.extend(
             [
@@ -305,7 +330,8 @@ def build_report(mode: str, now: datetime | None = None) -> dict[str, Any]:
         "report_id": stamp.replace(":", "") + "-lint",
         "created_at": stamp,
         "mode": mode,
-        "overall": overall_for(results),
+        "overall": structural_overall,
+        "semantic_review": semantic_review_for(mode, results),
         "results": results,
         "queues": {
             "blockers": sorted(blockers),
@@ -322,7 +348,8 @@ def render_report_markdown(report: dict[str, Any]) -> str:
     lines = [
         f"# Wiki lint report {report['report_id']}",
         "",
-        f"- Overall: `{report['overall']}`",
+        f"- Structural health: `{report['overall']}`",
+        f"- Semantic review: `{report['semantic_review']}`",
         f"- Mode: `{report['mode']}`",
         f"- Created: `{report['created_at']}`",
         "",
@@ -373,18 +400,19 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--no-report is reserved for RB Wiki run-controller subprocesses")
     mode_name = "full" if args.full else "quick"
     try:
-        report = build_report(mode_name)
+        report = build_report(mode_name, include_mutating_builders=not args.no_report)
     except (ContractError, OSError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
     if args.no_report:
-        print("PASS: controller owns persistence; lint report suppressed")
+        print("INFO: controller owns persistence; lint report suppressed")
     else:
         json_path, markdown_path = write_report(report)
         print(f"PASS: wrote {json_path} and {markdown_path}")
     if args.json:
         print(json.dumps(report, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
-    print(f"Overall health status: {report['overall']}")
+    print(f"Structural health status: {report['overall']}")
+    print(f"Semantic review status: {report['semantic_review']}")
     return 1 if report["overall"] == "red" else 0
 
 

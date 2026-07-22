@@ -40,7 +40,7 @@ class ExternalCheckIntegrityTests(unittest.TestCase):
                     root,
                     str(envelope["run_id"]),
                     str(envelope["run_token"]),
-                    ["quick-lint=fail", "quick-lint=pass"],
+                    ["agent-review=fail", "agent-review=pass"],
                 )
             record = json.loads(
                 (root / ".wiki_state" / "runs" / f"{envelope['run_id']}.json").read_text(encoding="utf-8")
@@ -58,7 +58,7 @@ class ExternalCheckIntegrityTests(unittest.TestCase):
             ["=pass"],
             ["UPPER=pass"],
             ["quick-lint=unknown"],
-            ["quick-lint=pass", "quick-lint=pass"],
+            ["agent-review=pass", "agent-review=pass"],
             [f"check-{index}=pass" for index in range(65)],
         ]
         for values in invalid:
@@ -67,7 +67,7 @@ class ExternalCheckIntegrityTests(unittest.TestCase):
                     parse_checks(values)
 
     def test_external_checks_cannot_impersonate_controller_checks(self) -> None:
-        for check_id in ["semantic-output", "provenance", "proposal-payload", "approval-binding"]:
+        for check_id in ["quick-lint", "semantic-output", "provenance", "proposal-payload", "approval-binding"]:
             with self.subTest(check_id=check_id):
                 with self.assertRaisesRegex(RunError, "controller-owned check"):
                     parse_checks([f"{check_id}=pass"])
@@ -79,10 +79,47 @@ class ExternalCheckIntegrityTests(unittest.TestCase):
                 root,
                 str(envelope["run_id"]),
                 str(envelope["run_token"]),
-                ["quick-lint=pass"],
+                ["agent-review=pass"],
             )
             self.assertEqual(code, 0)
-            self.assertEqual(record["checks"][0]["provenance"], "external-attestation")
+            by_id = {item["check_id"]: item for item in record["checks"]}
+            self.assertEqual(by_id["agent-review"]["provenance"], "external-attestation")
+            self.assertEqual(by_id["quick-lint"]["provenance"], "controller-executed")
+
+    def test_controller_runs_quick_lint_without_an_agent_attestation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root, envelope = self.make_manual(Path(temporary))
+            self.assertEqual(envelope["required_checks"], [])
+            code, record = finish_session(
+                root,
+                str(envelope["run_id"]),
+                str(envelope["run_token"]),
+                [],
+            )
+            self.assertEqual(code, 0)
+            quick_lint = next(item for item in record["checks"] if item["check_id"] == "quick-lint")
+            self.assertEqual(quick_lint["status"], "pass")
+            self.assertEqual(quick_lint["provenance"], "controller-executed")
+
+    def test_controller_quick_lint_failure_prevents_closure(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root, envelope = self.make_manual(Path(temporary))
+            page = root / "wiki" / "concepts" / "frontmatter.md"
+            page.write_text(
+                page.read_text(encoding="utf-8") + "\n[Missing local page](/concepts/does-not-exist.md)\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RunError, "quick-lint validation failed"):
+                finish_session(
+                    root,
+                    str(envelope["run_id"]),
+                    str(envelope["run_token"]),
+                    [],
+                )
+            self.assertTrue((root / ".wiki_state" / "mutation.lock").exists())
+            terminate_session(
+                root, str(envelope["run_id"]), str(envelope["run_token"]), "failed", "test cleanup"
+            )
 
     def test_a_failed_attestation_prevents_closure(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -92,7 +129,7 @@ class ExternalCheckIntegrityTests(unittest.TestCase):
                     root,
                     str(envelope["run_id"]),
                     str(envelope["run_token"]),
-                    ["quick-lint=pass", "agent-review=fail"],
+                    ["agent-review=fail"],
                 )
             self.assertTrue((root / ".wiki_state" / "mutation.lock").exists())
             terminate_session(
@@ -109,7 +146,7 @@ class ExternalCheckIntegrityTests(unittest.TestCase):
                     root,
                     str(envelope["run_id"]),
                     str(envelope["run_token"]),
-                    ["quick-lint=pass"],
+                    [],
                 )
             terminate_session(
                 root, str(envelope["run_id"]), str(envelope["run_token"]), "failed", "test cleanup"

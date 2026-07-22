@@ -1,11 +1,16 @@
 from __future__ import annotations
 
-import unittest
-
-from test_lint_grace_periods import lint_json
-from wiki_test_support import make_git_wiki
 import tempfile
+import sys
+import unittest
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+
+from lint import semantic_review_for  # noqa: E402
+from test_lint_grace_periods import lint_json  # noqa: E402
+from wiki_test_support import make_git_wiki  # noqa: E402
 
 
 class SemanticCheckOutcomeTests(unittest.TestCase):
@@ -16,6 +21,11 @@ class SemanticCheckOutcomeTests(unittest.TestCase):
         self.assertEqual(len(semantic), 3)
         self.assertTrue(all(item["outcome"] == "not_run" for item in semantic))
         self.assertTrue(all(item["disposition"] == "agent-required" for item in semantic))
+        self.assertEqual(report["overall"], "green")
+        self.assertEqual(report["semantic_review"], "required")
+
+    def test_missing_semantic_results_cannot_be_reported_as_complete(self) -> None:
+        self.assertEqual(semantic_review_for("full", []), "required")
 
 
 if __name__ == "__main__":

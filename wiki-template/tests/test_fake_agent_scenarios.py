@@ -36,14 +36,14 @@ class FakeAgentScenarioTests(unittest.TestCase):
             root, proposed = self.prepare(Path(temporary))
             envelope = start_session(root, "synthesize", "authorised-autonomous-apply", "apply-agent", "test-proposal")
             write_apply_run(root, envelope["run_id"], proposed)
-            code, _record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, _record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 0)
         with tempfile.TemporaryDirectory() as temporary:
             root, proposed = self.prepare(Path(temporary), cited=False)
             envelope = start_session(root, "synthesize", "authorised-autonomous-apply", "apply-agent", "test-proposal")
             write_apply_run(root, envelope["run_id"], proposed)
             with self.assertRaisesRegex(ContractError, "no Reference citation"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
 
     def test_forbidden_path_and_over_budget_fail_without_semantic_guessing(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -53,7 +53,7 @@ class FakeAgentScenarioTests(unittest.TestCase):
             forbidden = root / "wiki" / "concepts" / "forbidden.md"
             forbidden.write_text(target_content("Forbidden"), encoding="utf-8")
             with self.assertRaisesRegex(RunError, "outside authority"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
         with tempfile.TemporaryDirectory() as temporary:
             root, proposed = self.prepare(Path(temporary))
             grant = root / "schema" / "authorities" / "apply-agent.yml"
@@ -67,7 +67,7 @@ class FakeAgentScenarioTests(unittest.TestCase):
             envelope = start_session(root, "synthesize", "authorised-autonomous-apply", "apply-agent", "test-proposal")
             write_apply_run(root, envelope["run_id"], proposed)
             with self.assertRaisesRegex(RunError, "changed-path budget"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
 
     def test_source_text_cannot_change_scope_or_consequence_policy(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -131,7 +131,7 @@ class FakeAgentScenarioTests(unittest.TestCase):
             session_path.write_text(json.dumps(session), encoding="utf-8")
             write_apply_run(root, envelope["run_id"], tampered)
             with self.assertRaisesRegex(RunError, "semantic context.*base"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
 
     def test_low_confidence_blocked_output_cannot_claim_an_apply(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -146,7 +146,7 @@ class FakeAgentScenarioTests(unittest.TestCase):
             output["applied_changes"] = []
             output_path.write_text(json.dumps(output), encoding="utf-8")
             with self.assertRaisesRegex(RunError, "exact applied payload"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
 
     def test_interrupted_apply_handoff_cannot_close_without_semantic_output(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -159,7 +159,7 @@ class FakeAgentScenarioTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(item["content"], encoding="utf-8")
             with self.assertRaisesRegex(RunError, "semantic-output payload"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
 
 
 if __name__ == "__main__":

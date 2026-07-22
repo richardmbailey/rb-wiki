@@ -161,6 +161,52 @@ class CronRunIntegrationTests(unittest.TestCase):
             self.assertTrue(list((root / "reports" / "lint").glob("*.json")))
             self.assertEqual(run(["git", "status", "--porcelain"], root).stdout, "")
 
+    def test_nightly_maintenance_owns_routing_rebuilds(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = make_git_wiki(Path(temporary))
+            add_authority(
+                root,
+                "cron-maintain",
+                mode="scheduled-propose",
+                lane="maintain",
+                action="deterministic-maintenance",
+                writable_paths=[
+                    "wiki/index.md",
+                    ".wiki_cache/graph.json",
+                    "reports/lint/**",
+                    "reports/runs/**",
+                    "reports/latest.json",
+                ],
+                commit_policy="scoped-auto",
+            )
+            relative = "wiki/syntheses/scheduled-routing-rebuild.md"
+            source = (root / "wiki" / "syntheses" / "llm-wiki-vs-rag.md").read_text(encoding="utf-8")
+            (root / relative).write_text(
+                source.replace("LLM-Wiki versus RAG", "Scheduled routing rebuild"),
+                encoding="utf-8",
+            )
+            run(["git", "add", relative], root)
+            run(["git", "commit", "-q", "-m", "add stale routing input"], root)
+
+            nightly = run(
+                [sys.executable, "tools/wiki_cron.py", "nightly", "--authority", "cron-maintain"],
+                root,
+                check=False,
+            )
+
+            self.assertEqual(nightly.returncode, 0, nightly.stdout + nightly.stderr)
+            self.assertIn(
+                "/syntheses/scheduled-routing-rebuild.md",
+                (root / "wiki" / "index.md").read_text(encoding="utf-8"),
+            )
+            committed = set(
+                run(["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"], root)
+                .stdout.splitlines()
+            )
+            self.assertIn("wiki/index.md", committed)
+            self.assertIn(".wiki_cache/graph.json", committed)
+            self.assertFalse(any(path.startswith("reports/lint/") for path in committed))
+
     def test_weekly_scope_is_rejected_before_report_mutation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = make_git_wiki(Path(temporary))

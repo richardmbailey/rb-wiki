@@ -16,9 +16,15 @@
     "uncertainties": {"type": "array", "items": {"type": "string"}},
     "contradictions": {"type": "array", "items": {"type": "string"}},
     "checks_performed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-    "proposed_changes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-    "applied_changes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "proposed_changes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/wikiPagePath"}},
+    "applied_changes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/wikiPagePath"}},
     "approval_required": {"type": "boolean"},
     "created_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "wikiPagePath": {
+      "type": "string",
+      "pattern": "^wiki/(?!index\\.md$|log\\.md$)[A-Za-z0-9._/-]+\\.md$"
+    }
   }
 }

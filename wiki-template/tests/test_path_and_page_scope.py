@@ -32,7 +32,7 @@ class PathAndPageScopeTests(unittest.TestCase):
             source = root / "wiki" / "concepts" / "frontmatter.md"
             created = root / "wiki" / "concepts" / "session-created.md"
             created.write_text(source.read_text(encoding="utf-8").replace("Frontmatter", "Session Created"), encoding="utf-8")
-            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 3)
             self.assertEqual(record["state"], "manual-commit-required")
             self.assertEqual(dirty.read_text(encoding="utf-8"), "human work\n")
@@ -55,7 +55,7 @@ class PathAndPageScopeTests(unittest.TestCase):
             target = root / "wiki" / "references" / "out-of-scope.md"
             target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
             with self.assertRaisesRegex(RunError, "page-type scope"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
     def test_changed_initial_path_is_detected(self) -> None:
@@ -75,7 +75,7 @@ class PathAndPageScopeTests(unittest.TestCase):
             envelope = start_session(root, "semantic", "manual-assist", "manual-editor")
             dirty.write_text(dirty.read_text(encoding="utf-8") + "Agent overlap.\n", encoding="utf-8")
             with self.assertRaisesRegex(RunError, "protected initial"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
 

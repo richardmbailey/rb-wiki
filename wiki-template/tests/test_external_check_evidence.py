@@ -68,7 +68,7 @@ class ExternalCheckEvidenceTests(unittest.TestCase):
             envelope = start_session(root, "semantic", "manual-assist", "manual-editor")
             code, record = finish_session(
                 root, envelope["run_id"], envelope["run_token"],
-                ["quick-lint=pass", "agent-review=pass@reports/checks/review.json"],
+                ["agent-review=pass@reports/checks/review.json"],
             )
             self.assertEqual(code, 0)
             evidence_check = next(item for item in record["checks"] if item["check_id"] == "agent-review")

@@ -32,7 +32,7 @@ class ResolutionCommitValidationTests(unittest.TestCase):
         envelope = start_session(root, "semantic", "manual-assist", "manual-editor")
         page = root / "wiki" / "concepts" / "frontmatter.md"
         page.write_text(page.read_text(encoding="utf-8") + "\nManual resolution content.\n", encoding="utf-8")
-        _code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+        _code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
         return root, record
 
     def test_nonexistent_tree_and_blob_ids_are_rejected(self) -> None:
@@ -99,7 +99,7 @@ class ResolutionCommitValidationTests(unittest.TestCase):
             os.environ["RB_WIKI_FAULT_STAGE"] = "after-cas"
             try:
                 code, record = finish_session(
-                    root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"]
+                    root, envelope["run_id"], envelope["run_token"], []
                 )
             finally:
                 os.environ.pop("RB_WIKI_FAULT_STAGE", None)

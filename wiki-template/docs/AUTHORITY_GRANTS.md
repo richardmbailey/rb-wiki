@@ -75,13 +75,12 @@ python3 tools/wiki_run.py start \
   --authority manual-editor-example
 ```
 
-Give the returned envelope and token only to the cooperating agent performing that run. Heartbeat during long work, inspect status when needed, and finish only after running the required checks:
+Give the returned envelope and token only to the cooperating agent performing that run. Heartbeat during long work and inspect status when needed. At finish, the controller runs quick lint itself and records the result:
 
 ```bash
 python3 tools/wiki_run.py heartbeat --run-id RUN_ID --token RUN_TOKEN
 python3 tools/wiki_run.py status --run-id RUN_ID
-python3 tools/wiki_run.py finish --run-id RUN_ID --token RUN_TOKEN \
-  --check quick-lint=pass
+python3 tools/wiki_run.py finish --run-id RUN_ID --token RUN_TOKEN
 ```
 
 With `commit_policy: manual`, a material result ends `manual-commit-required`. Review the diff and commit it yourself. If the task should not continue, use `cancel`; use `fail` when the agent encountered an actual failure.
@@ -253,14 +252,14 @@ governance_maintenance: false
 ```
 
 ```bash
-python3 tools/wiki_run.py start \
-  --lane synthesize \
-  --mode authorised-autonomous-apply \
-  --authority autonomous-synthesis-example \
-  --proposal-id PROPOSAL_ID
+python3 tools/wiki_cron.py apply --authority autonomous-synthesis-example
 ```
 
-High-consequence work also requires `--approval-id APPROVAL_ID` for a separate committed, unexpired approval bound to the proposal digest. The agent may not draft its own approval during the apply run.
+The command reads only committed proposal and handoff artifacts, rejects unsafe or stale candidates, and selects at most one by `created_at` and `proposal_id`. It constructs the run-bound semantic record itself and applies only the exact payload. A scheduled job must invoke this wrapper; it must not select a proposal, start a session, edit pages, construct semantic JSON, or run Git commands itself.
+
+High-consequence work also requires a separate committed, unexpired approval bound to the proposal digest. The wrapper finds and validates that approval deterministically. The proposing agent may not draft its own approval during the apply run.
+
+Routing files are deliberately absent from this grant. The constrained apply validates without rebuilding `wiki/index.md` or `.wiki_cache/graph.json`; scheduled maintenance owns those derived artifacts.
 
 ## Activation Checks
 

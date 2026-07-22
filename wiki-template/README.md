@@ -145,16 +145,19 @@ Use $rb-wiki-maintenance to run quick maintenance on this wiki.
 Use $rb-wiki-maintenance to run the weekly deep clean.
 ```
 
-## Scheduled Maintenance
+## Scheduled Automation
 
-These commands are for agent-driven operation. Each requires a committed maintenance grant:
+These commands are for agent-driven operation. Each requires a separate committed grant for that job:
 
 ```bash
+python3 tools/wiki_cron.py apply --authority YOUR-APPLY-GRANT
 python3 tools/wiki_cron.py nightly --authority YOUR-MAINTENANCE-GRANT
 python3 tools/wiki_cron.py weekly --authority YOUR-MAINTENANCE-GRANT
 ```
 
-Replace `YOUR-MAINTENANCE-GRANT` with the name of your maintenance permission file. The nightly task performs quick routine checks. The weekly task performs a deeper review and writes a detailed report. These tasks report serious problems instead of deleting, merging, renaming, or substantially rewriting pages on their own.
+The apply command selects and applies at most one eligible committed proposal. It does not ask an AI assistant to choose the proposal, write the final page, construct controller records, or run Git commands. The nightly task rebuilds navigation data and performs quick routine checks. The weekly task performs a deeper review and writes a detailed report.
+
+The complete staged workflow is: source acquisition or intake, then ingest, then synthesis/proposal, then deterministic authorised apply, then scheduled maintenance/review. Navigation index and graph rebuilding happen in the maintenance stage so a tightly constrained apply cannot acquire extra changed paths.
 
 If a result says that recovery is required, do not simply run the task again. First run:
 

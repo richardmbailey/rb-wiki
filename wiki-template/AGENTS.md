@@ -128,7 +128,7 @@ python3 tools/lint.py --quick
 python3 tools/lint.py --full --json
 ```
 
-Consume typed JSON results. Prioritise `fail` before `warn`, then severity, then `human-required`/`agent-required` disposition. A `not_run` semantic check requires an agent and must never be treated as a successful assessment.
+Consume typed JSON results. Treat `overall` as structural health and inspect `semantic_review` separately. Prioritise `fail` before `warn`, then severity, then `human-required`/`agent-required` disposition. A `not_run` semantic check requires an agent and must never be treated as a successful assessment.
 
 Treat `.wiki_cache/graph.json` as current only after its schema and source-manifest digest validate. Run envelopes carry a digest-bound capability snapshot. Optional agent provenance is attribution only: never place run tokens, credentials, full prompts, or unrestricted tool arguments in it.
 
@@ -140,11 +140,12 @@ Use these for scheduled upkeep:
 
 ```bash
 python3 tools/wiki_cron.py inbox --authority YOUR-INGEST-GRANT
+python3 tools/wiki_cron.py apply --authority YOUR-APPLY-GRANT
 python3 tools/wiki_cron.py nightly --authority YOUR-MAINTENANCE-GRANT
 python3 tools/wiki_cron.py weekly --authority YOUR-MAINTENANCE-GRANT
 ```
 
-All three cron commands run under the mutation lock and an explicit grant. Inbox processing snapshots direct inputs, atomically preserves raw evidence, journals registry/Reference/provenance transitions, and archives only after structural validation. Interrupted work resumes by digest without changing source identity. Unsupported files remain active unless the grant includes `preserve-unsupported`. Weekly maintenance writes a typed lint report and therefore needs `reports/lint/**` in its writable paths.
+All four cron commands run under the mutation lock and an explicit grant. Apply deterministically selects at most one eligible committed proposal and never delegates target writing, semantic JSON, session control, or Git operations to an LLM. Inbox processing snapshots direct inputs, atomically preserves raw evidence, journals registry/Reference/provenance transitions, and archives only after structural validation. Interrupted work resumes by digest without changing source identity. Unsupported files remain active unless the grant includes `preserve-unsupported`. Nightly and weekly maintenance own routing-index and graph rebuilding; weekly maintenance writes a typed lint report and therefore needs `reports/lint/**` in its writable paths.
 
 Exit `5` means the branch commit succeeded but bookkeeping needs authenticated recovery. Do not rerun the work or break the retained lock; use the exact `wiki_run.py recover` command recorded by the run.
 

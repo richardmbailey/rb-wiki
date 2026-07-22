@@ -3,15 +3,18 @@
 
 from __future__ import annotations
 
-import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 
 sys.dont_write_bytecode = True
 
 from ingest import SUPPORTED_SUFFIXES, ingest_one, write_ingest_report
+from authorised_apply import (
+    preflight_session_candidate,
+    select_authorised_candidate,
+    write_session_payload,
+)
 from authority import load_runtime_policy
 from run_lib import ContractError, RunError, git_base_commit
 from semantic_protocol import load_base_json, validate_acquisition
@@ -20,30 +23,22 @@ from wiki_run import execute_run, finish_session, load_session, start_session, t
 from wiki_lib import ROOT
 
 
+TERMINAL_EXIT_CODES = {
+    "completed": 0,
+    "blocked": 2,
+    "failed": 1,
+    "cancelled": 1,
+    "manual-commit-required": 3,
+    "approval-required": 4,
+}
+
+
 def inject_cron_fault(stage: str) -> None:
     requested = {
         item.strip() for item in os.environ.get("RB_WIKI_CRON_FAULT_STAGE", "").split(",") if item.strip()
     }
     if stage in requested:
         raise OSError(f"injected cron fault at {stage}")
-
-def run_tool(*args: str) -> tuple[int, str]:
-    env = os.environ.copy()
-    env["PYTHONDONTWRITEBYTECODE"] = "1"
-    try:
-        completed = subprocess.run(
-            [sys.executable, *args],
-            cwd=ROOT,
-            env=env,
-            text=True,
-            capture_output=True,
-            check=False,
-            timeout=300,
-        )
-    except subprocess.TimeoutExpired as exc:
-        return 124, f"{' '.join(args)} exceeded 300 seconds: {exc}"
-    return completed.returncode, (completed.stdout + completed.stderr).strip()
-
 
 def inbox_files() -> list[Path]:
     inbox = ROOT / "inbox"
@@ -55,6 +50,38 @@ def root_relative(path: Path) -> str:
         return path.resolve().relative_to(ROOT).as_posix()
     except ValueError:
         return path.name
+
+
+def fail_owned_session(run_id: str, token: str, error: Exception) -> int:
+    """Preserve an existing terminal/recovery outcome or fail one live session once."""
+    try:
+        try:
+            current = load_session(run_id, ROOT)["record"]
+        except Exception:
+            current = load_runtime_record(ROOT, run_id)
+        if current["state"] == "committed-recovery-required":
+            print(
+                f"recovery required: {run_id} ({current['commit_hash']}); {current['next_action']}",
+                file=sys.stderr,
+            )
+            return 5
+        if current["state"] in TERMINAL_EXIT_CODES:
+            print(
+                f"{current['state']}: {run_id} ({error}); {current['next_action']}",
+                file=sys.stderr,
+            )
+            return TERMINAL_EXIT_CODES[current["state"]]
+        record = terminate_session(ROOT, run_id, token, "failed", str(error))
+        inject_cron_fault("after-terminate")
+        inject_cron_fault("terminal-report-rendering")
+        print(f"failed: {record['run_id']} ({error}); {record['next_action']}", file=sys.stderr)
+        return 1
+    except Exception as termination_error:
+        print(
+            f"failed: {run_id} ({error}); terminal reporting failed: {termination_error}",
+            file=sys.stderr,
+        )
+        return 1
 
 
 def acquisition_handoff(acquisition_id: str | None) -> list[str] | None:
@@ -105,7 +132,7 @@ def inbox_sweep(authority_id: str, acquisition_id: str | None = None) -> int:
             )
         if not files:
             inject_cron_fault("empty-inbox-finish")
-            code, record = finish_session(ROOT, run_id, token, ["quick-lint=pass"])
+            code, record = finish_session(ROOT, run_id, token, [])
             inject_cron_fault("terminal-report-rendering")
             print(f"{record['state']}: {run_id}; inbox is empty")
             return code
@@ -137,35 +164,15 @@ def inbox_sweep(authority_id: str, acquisition_id: str | None = None) -> int:
         write_ingest_report(run_id, results, failures, acquisition_id)
         if failures:
             raise RunError("; ".join(failures))
-        inject_cron_fault("lint-subprocess")
-        lint_code, lint_output = run_tool("tools/lint.py", "--quick", "--no-report")
-        check = "quick-lint=pass" if lint_code == 0 else "quick-lint=fail"
+        inject_cron_fault("controller-lint")
         inject_cron_fault("finish")
-        code, record = finish_session(ROOT, run_id, token, [check])
+        code, record = finish_session(ROOT, run_id, token, [])
         inject_cron_fault("terminal-report-rendering")
-        print(f"{record['state']}: {run_id}; {lint_output}")
+        quick_lint = next(item for item in record["checks"] if item["check_id"] == "quick-lint")
+        print(f"{record['state']}: {run_id}; {quick_lint['summary']}")
         return code
     except Exception as exc:
-        try:
-            try:
-                current = load_session(run_id, ROOT)["record"]
-            except Exception:
-                current = load_runtime_record(ROOT, run_id)
-            if current["state"] == "committed-recovery-required":
-                print(f"recovery required: {run_id} ({current['commit_hash']})", file=sys.stderr)
-                return 5
-            if current["state"] in {
-                "completed", "blocked", "failed", "cancelled", "manual-commit-required", "approval-required"
-            }:
-                print(f"{current['state']}: {run_id} ({exc})", file=sys.stderr)
-                return 0 if current["state"] == "completed" else 1
-            record = terminate_session(ROOT, run_id, token, "failed", str(exc))
-            inject_cron_fault("after-terminate")
-            inject_cron_fault("terminal-report-rendering")
-            print(f"failed: {record['run_id']} ({exc})")
-        except Exception as termination_error:
-            print(f"failed: {run_id} ({exc}); terminal reporting failed: {termination_error}", file=sys.stderr)
-        return 1
+        return fail_owned_session(run_id, token, exc)
     finally:
         if previous_controller is None:
             os.environ.pop("RB_WIKI_RUN_CONTROLLER", None)
@@ -187,11 +194,51 @@ def maintenance(authority_id: str, full: bool = False) -> int:
     return code
 
 
+def apply_once(authority_id: str) -> int:
+    """Select and apply at most one eligible committed proposal."""
+    selection = select_authorised_candidate(ROOT, authority_id)
+    for rejected in selection.rejected:
+        print(f"rejected proposal {rejected.proposal_id}: {rejected.reason}", file=sys.stderr)
+    candidate = selection.candidate
+    if candidate is None:
+        if selection.rejected:
+            print("failed: no eligible committed proposal", file=sys.stderr)
+            return 1
+        print("completed: no committed proposals are waiting for this authority")
+        return 0
+    envelope = start_session(
+        ROOT,
+        candidate.lane,
+        "authorised-autonomous-apply",
+        authority_id,
+        candidate.proposal["proposal_id"],
+        candidate.approval_id,
+    )
+    run_id, token = envelope["run_id"], envelope["run_token"]
+    try:
+        inject_cron_fault("apply-after-session-start")
+        session_candidate = preflight_session_candidate(load_session(run_id, ROOT), ROOT)
+        inject_cron_fault("apply-before-write")
+        write_session_payload(ROOT, run_id, session_candidate)
+        inject_cron_fault("apply-after-write")
+        inject_cron_fault("apply-finish")
+        code, record = finish_session(ROOT, run_id, token, [])
+        inject_cron_fault("terminal-report-rendering")
+        print(
+            f"{record['state']}: {run_id}; proposal {candidate.proposal['proposal_id']}; "
+            f"{record['next_action']}"
+        )
+        return code
+    except Exception as exc:
+        return fail_owned_session(run_id, token, exc)
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) < 2 or argv[1] not in {"inbox", "nightly", "weekly"}:
+    if len(argv) < 2 or argv[1] not in {"apply", "inbox", "nightly", "weekly"}:
         print(
             "usage: python3 tools/wiki_cron.py "
-            "inbox --authority ID [--acquisition-id ID] | nightly --authority ID | weekly --authority ID"
+            "apply --authority ID | inbox --authority ID [--acquisition-id ID] | "
+            "nightly --authority ID | weekly --authority ID"
         )
         return 1
     if argv[1] == "inbox":
@@ -202,7 +249,13 @@ def main(argv: list[str]) -> int:
     if len(argv) != 4 or argv[2] != "--authority":
         print(f"FAIL: {argv[1]} requires --authority ID")
         return 1
-    return maintenance(argv[3], full=argv[1] == "weekly")
+    try:
+        if argv[1] == "apply":
+            return apply_once(argv[3])
+        return maintenance(argv[3], full=argv[1] == "weekly")
+    except (ContractError, RunError, OSError) as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

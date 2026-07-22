@@ -8,8 +8,9 @@ This inventory records the post-hardening ownership boundaries used for release 
 2. `fs_safety.py` enforces lexical containment and no-follow filesystem access.
 3. `contracts.py` performs bounded parsing, schema discovery, format checking, identity binding, and semantic-validator dispatch.
 4. `authority.py`, `lane_runtime.py`, `run_store.py`, and `git_transaction.py` own bounded policy, lane, persistence, and recoverable-commit responsibilities.
-5. `run_lib.py` retains shared Git/time/locking and atomic-write primitives plus narrow error/contract re-exports; it does not delegate back into or own authority, lane, Git-transaction, or run-persistence decisions.
-6. `wiki_run.py` and `wiki_cron.py` are orchestration/CLI layers. They select workflows and call the owning modules; lower layers are statically prevented from importing them.
+5. `authorised_apply.py` composes those lower-level contracts into read-only committed-candidate selection and exact payload preparation without owning sessions or commits.
+6. `run_lib.py` retains shared Git/time/locking and atomic-write primitives plus narrow error/contract re-exports; it does not delegate back into or own authority, lane, Git-transaction, or run-persistence decisions.
+7. `wiki_run.py` and `wiki_cron.py` are orchestration/CLI layers. They select workflows and call the owning modules; lower layers are statically prevented from importing them.
 
 The lower-layer import graph is acyclic. `run_lib.py` no longer delegates into the owning authority or Git-transaction modules; production callers use those canonical modules directly. Stable shared primitives and legacy error/contract import names remain for copied-wiki compatibility.
 
@@ -20,6 +21,7 @@ The lower-layer import graph is acyclic. `run_lib.py` no longer delegates into t
 | `wiki_run.py` | CLI parsing, session/run orchestration, closure sequencing, operator commands | schemas, authority, lane rules, persisted writes, Git transaction mechanics |
 | `run_lib.py` | timestamps, run IDs, lock ownership, shared Git/status primitives, compatibility façades | structured parsing, authority decisions, lane policy, transaction journals |
 | `wiki_cron.py` | one-session scheduled lifecycle and exception-safe terminalisation | ingest mechanics and session persistence |
+| `authorised_apply.py` | committed proposal enumeration, authority/preflight filtering, deterministic selection, and exact payload/semantic writes | session lifecycle, lint, commit, and recovery |
 | `ingest.py` | resumable source-transition workflow and source artifact construction | controller authority/closure and generic contracts |
 | `wiki_migrate.py` | deterministic patch-only migration planning | path safety and contract parsing |
 | `wiki_lib.py` | Markdown/frontmatter/link/graph domain helpers | generic structured contract loading and filesystem boundary rules |

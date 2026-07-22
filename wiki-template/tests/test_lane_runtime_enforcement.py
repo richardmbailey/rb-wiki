@@ -188,7 +188,7 @@ class LaneRuntimeEnforcementTests(unittest.TestCase):
             page = root / "wiki" / "concepts" / "forbidden.md"
             page.write_text("# forbidden\n", encoding="utf-8")
             with self.assertRaisesRegex(RunError, "lane contract"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             after = subprocess.run(
                 ["git", "rev-parse", "HEAD"], cwd=root, text=True, capture_output=True, check=True
             ).stdout.strip()

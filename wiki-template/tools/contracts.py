@@ -73,7 +73,13 @@ def _validate_run_semantics(data: Any, _context: WikiContext) -> None:
     if data["report_class"] != "ephemeral-telemetry":
         if not data["material"] or durable is None:
             raise ContractError("durable report class requires material state and a durable path")
-    controller_checks = {"semantic-output", "provenance", "proposal-payload", "approval-binding"}
+    controller_checks = {
+        "quick-lint",
+        "semantic-output",
+        "provenance",
+        "proposal-payload",
+        "approval-binding",
+    }
     if any(
         item["provenance"] == "external-attestation" and item["check_id"] in controller_checks
         for item in data["checks"]

@@ -44,7 +44,7 @@ class ResolutionRecordTests(unittest.TestCase):
             page = root / "wiki" / "concepts" / "frontmatter.md"
             page.write_text(page.read_text(encoding="utf-8") + "\nManual closure.\n", encoding="utf-8")
             _code, original = finish_session(
-                root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"]
+                root, envelope["run_id"], envelope["run_token"], []
             )
             resolution = record_resolution(
                 root, original["run_id"], "manual-resolver", "reviewer", "committed after review", None

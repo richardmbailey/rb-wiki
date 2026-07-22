@@ -22,7 +22,7 @@ class ProposalArtifactTests(unittest.TestCase):
             envelope = start_session(root, "synthesize", "scheduled-propose", "proposal-agent")
             record = proposal(envelope["run_id"], with_payload=False)
             write_proposal_run(root, envelope["run_id"], record)
-            code, result = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, result = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 3)
             self.assertNotIn("wiki/syntheses/agent-synthesis.md", result["changed_paths"])
 

@@ -50,7 +50,7 @@ class LaneHandoffTests(unittest.TestCase):
                 "next_artifact": "source-transition",
             }
             write_json(root / "reports" / "acquisitions" / "test-acquisition.json", acquisition)
-            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+            code, record = finish_session(root, envelope["run_id"], envelope["run_token"], [])
             self.assertEqual(code, 3)
             self.assertEqual(record["state"], "manual-commit-required")
 
@@ -114,7 +114,7 @@ class LaneHandoffTests(unittest.TestCase):
             )
 
             self.assertEqual(completed.returncode, 1)
-            self.assertIn("acquisition handoff mismatch", completed.stdout)
+            self.assertIn("acquisition handoff mismatch", completed.stdout + completed.stderr)
             self.assertTrue((root / "inbox" / "different.txt").is_file())
             self.assertEqual(list((root / "sources" / "raw").glob("*-different.txt")), [])
 

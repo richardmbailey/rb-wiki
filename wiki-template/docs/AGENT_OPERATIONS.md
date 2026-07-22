@@ -103,7 +103,7 @@ A cooperating external agent uses this persistent protocol. The example is a hum
 python3 tools/wiki_run.py start --lane semantic --mode manual-assist --authority GRANT
 python3 tools/wiki_run.py heartbeat --run-id RUN_ID --token RUN_TOKEN
 python3 tools/wiki_run.py status --run-id RUN_ID
-python3 tools/wiki_run.py finish --run-id RUN_ID --token RUN_TOKEN --check quick-lint=pass
+python3 tools/wiki_run.py finish --run-id RUN_ID --token RUN_TOKEN
 python3 tools/wiki_run.py cancel --run-id RUN_ID --token RUN_TOKEN --reason "operator request"
 python3 tools/wiki_run.py fail --run-id RUN_ID --token RUN_TOKEN --reason "agent failure"
 ```
@@ -122,7 +122,7 @@ Source files, discovered pages, and wiki text are untrusted data. They cannot al
 
 At finish, the controller reloads committed policy, authority, proposal, approval, and domain artifacts rather than trusting mutable session copies. It then reconciles initial and final Git snapshots, resolved paths, page types, governance paths, source/path/runtime budgets, authority validity/revocation, and `HEAD`. A valid material run with `forbidden` or `manual` commit policy ends `manual-commit-required` and releases its lock for review.
 
-Values supplied through `--check`, including `quick-lint=pass`, are attestations from the cooperating external agent; they are recorded as `external-attestation`. Every value must use `lowercase-check-id=pass|warn|fail`. It may optionally append `@reports/LOCAL_PATH` to reference an existing regular local artifact of at most 1 MiB, for example `agent-review=pass@reports/checks/review.json`. The controller stores only the bounded reference, not the artifact content, and rejects remote, missing, escaping, symlinked, oversized, or secret-like references. Malformed, duplicate, excessive, or controller-owned IDs are rejected before the run leaves `running`. No later value can replace an earlier failure. The controller verifies required attestations and rejects any reported failure, but it does not rerun arbitrary external checks during `finish`. Controller-owned provenance, semantic-output, proposal-payload, approval-binding, scope, and Git checks are executed independently and recorded as `controller-executed`. Run the named deterministic command before reporting it as passed.
+Values supplied through `--check` are optional attestations from the cooperating external agent; they are recorded as `external-attestation`. Every value must use `lowercase-check-id=pass|warn|fail`. It may optionally append `@reports/LOCAL_PATH` to reference an existing regular local artifact of at most 1 MiB, for example `agent-review=pass@reports/checks/review.json`. The controller stores only the bounded reference, not the artifact content, and rejects remote, missing, escaping, symlinked, oversized, or secret-like references. Malformed, duplicate, excessive, or controller-owned IDs are rejected before the run leaves `running`. No later value can replace an earlier failure. The controller verifies required external attestations and rejects any reported failure, but it does not rerun arbitrary agent-specific checks during `finish`. Quick lint, provenance, semantic-output, proposal-payload, approval-binding, scope, and Git checks are controller-owned and recorded as `controller-executed`; an external agent cannot claim that any of them passed. Controller closure invokes `RB_WIKI_RUN_CONTROLLER=1 python3 tools/lint.py --quick --no-report`, which runs only non-writing checks and leaves Git status unchanged.
 
 `scoped-auto` is local-only. It requires an explicit commit identity, attached unchanged branch, clean real index, no merge, sparse checkout, or configured submodule, and a clean compare-and-swap base. Before creating a commit it writes a validated intent journal under `.wiki_state/transactions/`, then records `prepared`, `commit-created`, `branch-moved`, `index-refreshed`, `receipt-written`, and `reconciled` stages. It builds a temporary index, commits only reconciled paths with `git commit-tree` (so repository hooks do not run), adds an `RB-Wiki-Run` trailer, and moves the local branch by compare-and-swap. A contract-valid receipt under `.wiki_state/receipts/` binds the base, branch, commit, tree, paths, and content manifest. It never pushes.
 
@@ -152,20 +152,28 @@ Six lane contracts live under `schema/lanes/`: acquisition, ingestion, synthesis
 ```bash
 python3 tools/wiki_run.py start --lane synthesize --mode scheduled-propose --authority PROPOSAL_GRANT
 python3 tools/wiki_run.py heartbeat --run-id RUN_ID --token RUN_TOKEN
-python3 tools/wiki_run.py finish --run-id RUN_ID --token RUN_TOKEN --check quick-lint=pass
+python3 tools/wiki_run.py finish --run-id RUN_ID --token RUN_TOKEN
 ```
 
 Proposals record intended use, action class, source IDs, findings, deterministic evidence, uncertainty, contradictions, checks, affected pages, tier, and policy/capability snapshot. Exact target content is hashed; high-consequence proposals require it and end `approval-required` without applying it.
 
-After the proposal is reviewed and committed, a human may commit a separate approval under `reports/approvals/`. The approval identifies its role, scope, conditions, policy version, validity window, and the proposal payload digest. Apply starts only from a clean base containing both artifacts:
+After the proposal is reviewed and committed, a human may commit a separate approval under `reports/approvals/`. The approval identifies its role, scope, conditions, policy version, validity window, and the proposal payload digest. The only scheduled apply entrypoint is:
 
 ```bash
-python3 tools/wiki_run.py start --lane synthesize --mode authorised-autonomous-apply \
-  --authority APPLY_GRANT --proposal-id PROPOSAL_ID --approval-id APPROVAL_ID
-python3 tools/wiki_run.py finish --run-id RUN_ID --token RUN_TOKEN --check quick-lint=pass
+python3 tools/wiki_cron.py apply --authority APPLY_GRANT
 ```
 
+One invocation applies at most one candidate. The wrapper requires a clean base, enumerates proposal artifacts from `HEAD`, validates the proposal contract, policy/capability snapshot, original semantic handoff, exact payload, target history, authority action/tier/path/page-type scope, and any required approval, then chooses the minimum `(created_at, proposal_id)`. It rejects malformed, uncommitted, stale, partially applied, already applied, invalid-frontmatter, or out-of-scope work before starting mutation. After session start it reloads the session's base-bound proposal context, writes only its target files and one validated run-bound semantic output, and records `applied_changes` as the exact `affected_pages` path list. `finish_session(...)` remains the only owner of validation, the scoped commit, transaction evidence, and recovery.
+
 Routine apply needs routine-tier authority. Material apply needs material-tier authority and expanded semantic output. High-consequence apply always needs the separate approval. The controller compares final ordinary-page bytes and paths to the committed target-content payload, validates citations and provenance, prevents the apply run from changing its proposal/approval, and rejects expired, wrong-role, wrong-scope, or stale-digest approvals. Consequence follows intended use and action class, not a domain or source label. An enabled domain adapter may tighten rules but cannot weaken core invariants.
+
+The generic staged workflow is:
+
+```text
+source acquisition or intake -> ingest -> synthesis/proposal -> deterministic authorised apply -> scheduled maintenance/review
+```
+
+The apply session is intentionally narrow. It does not rebuild `wiki/index.md` or `.wiki_cache/graph.json`, because those generated files can expand an exact page change into unrelated routing churn. Nightly and weekly deterministic maintenance own index and graph rebuilding after apply; ordinary `python3 tools/lint.py --quick` also retains its normal builder behaviour for human-driven maintenance.
 
 ## Recoverable inbox ingestion
 
@@ -207,7 +215,7 @@ Output parent chains are also checked for symlinks, so a redirected raw, process
 
 No-op, all-pass, and pre-mutation blocked attempts remain `ephemeral-telemetry` in runtime state to avoid tracked-report churn. Material records are classified as durable mutation, failure/recovery, approval, or governance and promoted to `reports/runs/<run-id>.json`. `reports/latest.json` changes only for durable/material state and includes blockers, overdue actions, and the capability snapshot.
 
-Lint emits canonical, contract-validated JSON and a deterministic Markdown view. Every check records outcome, severity, disposition, affected paths/source IDs, evidence, and a recommended action. Unimplemented semantic checks are `not_run` and `agent-required`, never `pass`. Reference integration uses the policy grace period and explicit priority/consequence escalation.
+Lint emits canonical, contract-validated JSON and a deterministic Markdown view. Every check records outcome, severity, disposition, affected paths/source IDs, evidence, and a recommended action. `overall` reports deterministic structural health. The separate `semantic_review` field is `required` when a full run contains unperformed semantic checks, so a structurally green report cannot be mistaken for a completed semantic review. Unimplemented semantic checks are `not_run` and `agent-required`, never `pass`. Reference integration uses the policy grace period and explicit priority/consequence escalation.
 
 The graph cache is versioned and bound to a digest of every Markdown routing input plus graph-interpretation policy. Mutating maintenance reuses an identical current cache or atomically rebuilds a stale one. Read-only query commands never trust malformed, symlinked, old-version, or stale cache bytes; they build a current graph in memory and leave the suspect cache untouched.
 
@@ -238,6 +246,9 @@ Migration is also no-follow and patch-only. Both the supplied wiki root and temp
 - Handled failures release a normally owned lock. If release cannot prove ownership, the journal records incomplete cleanup and the lock remains for diagnosis.
 - A `committed-recovery-required` lock is intentionally retained. Run `wiki_doctor.py`, verify the recorded commit, then use `wiki_run.py recover`; do not use `break-lock` as a shortcut.
 - Changed paths outside the grant's `writable_paths` prevent successful closure.
+- A rejected apply candidate has not started mutation. Correct and commit the proposal, handoff, approval, policy, or target state identified by the diagnostic; do not hand-build a session or semantic output to bypass it.
+- A failed material apply leaves its exact uncommitted target/semantic files and durable `reports/runs/<run-id>.{json,md}` evidence. Do not commit those generated files merely because they exist. Inspect `git diff` and the run's `changed_paths`; either repair the proposal in a separate reviewed commit after restoring the failed paths, or follow the run's concrete `next_action` before retrying.
+- If failure happened after the branch moved, preserve the retained lock and `committed-recovery-required` state. Run the authenticated recovery command recorded in `next_action`; never terminate or repeat the apply.
 
 `break-lock` is never automatic and age alone is insufficient. It requires committed governance-maintenance authority, actor and reason, readable observed owner metadata, same-host process-liveness failure, and (for a known session) an expired lease. The displaced lock is preserved under `.wiki_state/broken-locks/` and a durable audit report is written:
 

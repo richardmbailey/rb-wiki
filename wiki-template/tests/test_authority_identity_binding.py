@@ -141,7 +141,7 @@ class AuthorityIdentityBindingTests(unittest.TestCase):
             journal["authority_id"] = "alias"
             journal_path.write_text(json.dumps(journal), encoding="utf-8")
             with self.assertRaisesRegex(ContractError, "filename and authority_id"):
-                finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                finish_session(root, envelope["run_id"], envelope["run_token"], [])
             terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
 
 

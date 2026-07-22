@@ -26,7 +26,7 @@ Each wiki can:
 - **Ingest:** process a source file by preserving the original, recording it, and creating a source page that the rest of the wiki can cite.
 - **Markdown:** a simple text-file format. Markdown files end in `.md` and can be opened in ordinary text editors as well as apps such as Obsidian.
 - **Git:** Git is the change history for the wiki. A **commit** is a saved checkpoint. A **push** uploads saved checkpoints to a remote service such as GitHub.
-- **Agent:** an AI assistant that can take actions, such as reading or changing files, rather than only answering questions.
+- **Agent:** An AI assistant is software such as Codex or Claude. An agent is an AI assistant that can take actions, such as reading or changing files, rather than only answering questions.
 - **Authority grant:** An authority grant is a small permission file. It says exactly what an agent or automated task may do, where it may make changes, and when its permission ends.
 - **Check:** an automatic inspection for problems. Some technical documents call these checks “validation” or “lint”.
 - **Proposal:** a suggested change that has been written out for review but has not yet been applied to the normal wiki pages.
@@ -172,11 +172,14 @@ It checks the wiki’s structure, page information, links, and source records. A
 The system also offers nightly and weekly maintenance commands for agent-driven use:
 
 ```bash
+python3 tools/wiki_cron.py apply --authority YOUR-APPLY-GRANT
 python3 tools/wiki_cron.py nightly --authority YOUR-MAINTENANCE-GRANT
 python3 tools/wiki_cron.py weekly --authority YOUR-MAINTENANCE-GRANT
 ```
 
-Replace `YOUR-MAINTENANCE-GRANT` with the name of a maintenance permission file. The nightly task performs quick routine checks. The weekly task performs a deeper review and writes a detailed report. These tasks are designed to report serious problems rather than deleting, merging, renaming, or substantially rewriting pages on their own.
+Use a separate, narrowly scoped permission file for apply and maintenance. The apply task deterministically selects and applies at most one eligible committed proposal; it does not ask an AI assistant to construct the page, task record, or Git commit. The nightly task rebuilds navigation data and performs quick routine checks. The weekly task performs a deeper review and writes a detailed report.
+
+The staged agent-driven pipeline is: source acquisition or intake, then ingest, then synthesis/proposal, then deterministic authorised apply, then scheduled maintenance/review. Navigation index and graph rebuilding happen during maintenance so they cannot broaden a tightly scoped apply.
 
 ## What Is In This Project
 

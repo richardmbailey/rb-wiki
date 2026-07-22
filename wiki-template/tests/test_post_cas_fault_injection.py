@@ -63,7 +63,7 @@ class PostCasFaultInjectionTests(unittest.TestCase):
                 base = run(["git", "rev-parse", "HEAD"], root).stdout.strip()
                 os.environ["RB_WIKI_FAULT_STAGE"] = stage
                 code, record = finish_session(
-                    root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"]
+                    root, envelope["run_id"], envelope["run_token"], []
                 )
                 self.assertEqual(code, 5)
                 self.assertEqual(record["state"], "committed-recovery-required")
@@ -97,7 +97,7 @@ class PostCasFaultInjectionTests(unittest.TestCase):
                 base = run(["git", "rev-parse", "HEAD"], root).stdout.strip()
                 os.environ["RB_WIKI_FAULT_STAGE"] = stage
                 with self.assertRaises((OSError, RunError)):
-                    finish_session(root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"])
+                    finish_session(root, envelope["run_id"], envelope["run_token"], [])
                 self.assertEqual(run(["git", "rev-parse", "HEAD"], root).stdout.strip(), base)
                 os.environ.pop("RB_WIKI_FAULT_STAGE", None)
                 terminate_session(root, envelope["run_id"], envelope["run_token"], "failed", "test cleanup")
@@ -137,7 +137,7 @@ class PostCasFaultInjectionTests(unittest.TestCase):
             root, _proposed, envelope = self.make_run(Path(temporary))
             os.environ["RB_WIKI_FAULT_STAGE"] = "after-cas"
             code, record = finish_session(
-                root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"]
+                root, envelope["run_id"], envelope["run_token"], []
             )
             self.assertEqual(code, 5)
             transaction_path = root / ".wiki_state" / "transactions" / f"{record['run_id']}.json"
@@ -158,7 +158,7 @@ class PostCasFaultInjectionTests(unittest.TestCase):
             base = run(["git", "rev-parse", "HEAD"], root).stdout.strip()
             os.environ["RB_WIKI_FAULT_STAGE"] = "after-cas"
             code, record = finish_session(
-                root, envelope["run_id"], envelope["run_token"], ["quick-lint=pass"]
+                root, envelope["run_id"], envelope["run_token"], []
             )
             self.assertEqual(code, 5)
             transaction = json.loads(

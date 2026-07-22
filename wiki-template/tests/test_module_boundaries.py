@@ -11,7 +11,7 @@ class ModuleBoundaryTests(unittest.TestCase):
     MODULES = {
         "errors", "wiki_context", "fs_safety", "contracts", "run_lib",
         "agent_provenance", "semantic_protocol", "authority", "lane_runtime", "run_store",
-        "git_transaction",
+        "git_transaction", "authorised_apply",
     }
 
     def imports_for(self, name: str) -> set[str]:
